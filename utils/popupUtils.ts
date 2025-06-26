@@ -246,6 +246,5 @@ async function checkUserPermissions(poi: POIData): Promise<boolean> {
   if (!roleData) return false
 
   return roleData.role === 'owner' ||
-    roleData.role === 'editor_all' ||
-    (roleData.role === 'editor_own' && poi.creatorId === roleData.userId)
+    roleData.role === 'editor'
 } 

@@ -2,24 +2,19 @@ import type { LatLng } from 'leaflet'
 import type { POIData, POIFormData } from './poi'
 
 // User role types
-export type UserRole = 'owner' | 'editor_all' | 'editor_own' | 'viewer' | 'contributor' | 'banned'
+export type UserRole = 'owner' | 'editor' | 'viewer'
 
 // Main interface for a map
-export interface MapData {
+export interface Map {
     id: string
     name: string
     description?: string
-    imageWidth: number
-    imageHeight: number
-    imageUrl: string
-    thumbnailUrl?: string
     gameId: string
-    ownerId: string
-    isPublic: boolean
-    createdAt?: Date
-    updatedAt?: Date
     gameName: string
-    userRole?: UserRole | null
+    ownerId: string
+    imagePath?: string
+    userRole?: UserRole
+    isOwner?: boolean
 }
 
 // Interface for map markers
@@ -46,3 +41,10 @@ export interface Category {
 
 // Re-export required POI types
 export type { POIData, POIFormData }
+
+export interface MapCollaborator {
+    userId: string
+    username: string
+    role: UserRole
+    avatar?: string
+}

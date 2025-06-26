@@ -5,7 +5,7 @@
       :open="categorySidebarOpen"
       :categories="categories"
       :map-id="map.id"
-      :can-edit="map.userRole === 'owner' || map.userRole === 'editor_all' || map.userRole === 'editor_own'"
+      :can-edit="map.userRole === 'owner' || map.userRole === 'editor'"
       @close="categorySidebarOpen = false"
       @update:categories="categories = $event"
     />
@@ -24,6 +24,7 @@
       @update:all-categories-visibility="updateAllCategoriesVisibility"
       @close-categories="categorySidebarOpen = false"
       @close-map-info="mapInfoSidebarOpen = false"
+      @close-collaborators="closeCollaborators"
     />
 
     <v-main class="pa-0">
@@ -34,7 +35,7 @@
           :add-poi-mode="addPoiMode"
           :categories="categories"
           :visible-categories="visibleCategories"
-          :can-edit="map.userRole === 'owner' || map.userRole === 'editor_all' || map.userRole === 'editor_own'"
+          :can-edit="map.userRole === 'owner' || map.userRole === 'editor'"
           @cancel-poi="exitAddPoiMode"
           @show-sidebar="drawer = true"
         />
@@ -51,12 +52,12 @@ import Sidebar from '~/components/Sidebar.vue'
 import MapViewer from '@/components/MapViewer.vue'
 import CategorySidebar from '@/components/CategorySidebar.vue'
 import axios from 'axios'
-import type { MapData } from '@/types/map'
+import type { Map } from '@/types/map'
 import type { Category } from '@/types/category'
 
 const route = useRoute()
 const router = useRouter()
-const map = ref<MapData | null>(null)
+const map = ref<Map | null>(null)
 const addPoiMode = ref(false)
 const drawer = ref(true)
 const categorySidebarOpen = ref(false)
@@ -64,11 +65,8 @@ const mapInfoSidebarOpen = ref(false)
 const categories = ref<Category[]>([])
 const visibleCategories = ref<string[]>([])
 
-function canAccessMap(mapData: MapData, token: string | null): boolean {
-  // If user is banned, access denied (regardless of map being public or private)
-  if (mapData.userRole === 'banned') {
-    return false
-  }
+function canAccessMap(mapData: Map, token: string | null): boolean {
+  // Since banned role is removed, no need to check for it
 
   // If map is public, access granted
   if (mapData.isPublic) {
@@ -81,7 +79,7 @@ function canAccessMap(mapData: MapData, token: string | null): boolean {
   }
 
   // Check valid roles for private maps
-  const validRoles = ['owner', 'viewer', 'editor_all', 'editor_own', 'contributor']
+  const validRoles = ['owner', 'viewer', 'editor']
   return mapData.userRole ? validRoles.includes(mapData.userRole) : false
 }
 
@@ -165,8 +163,14 @@ function openCategorySidebar() {
   categorySidebarOpen.value = true
 }
 
-function updateMap(updatedMap: MapData) {
+function updateMap(updatedMap: Map) {
   map.value = updatedMap
+}
+
+function closeCollaborators() {
+  // This function will be called when we want to close the collaborators panel from other panels
+  // The collaborators panel is managed in Sidebar.vue, so we don't need to do anything here
+  // It's just to maintain consistency of the API
 }
 
 watch(drawer, (opened) => {

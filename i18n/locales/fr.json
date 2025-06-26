@@ -12,7 +12,10 @@
         "delete": "Supprimer",
         "edit": "Modifier",
         "search": "Rechercher",
-        "loading": "Chargement..."
+        "loading": "Chargement...",
+        "yes": "Oui",
+        "no": "Non",
+        "unknown": "Inconnu"
     },
     "navigation": {
         "home": "Accueil",
@@ -33,11 +36,21 @@
         "passwordsDoNotMatch": "Les mots de passe ne correspondent pas",
         "invalidUsername": "Le nom d'utilisateur doit contenir entre 3 et 100 caractères",
         "weakPassword": "Le mot de passe doit contenir 8+ caractères avec majuscule, minuscule, chiffre et symbole",
-        "unknown": "Une erreur inconnue s'est produite",
+        "unknown": "Une erreur inattendue s'est produite",
         "deleteFailed": "Impossible de supprimer la carte",
         "fetchProfileFailed": "Impossible de récupérer le profil utilisateur",
         "fetchMapsFailed": "Impossible de récupérer vos cartes",
-        "insufficientPermissions": "Vous n'avez pas les permissions nécessaires pour effectuer cette action"
+        "insufficientPermissions": "Vous n'avez pas les permissions nécessaires pour effectuer cette action",
+        "fetchInvitationsFailed": "Impossible de récupérer les invitations",
+        "fetchCollaboratorsFailed": "Impossible de récupérer la liste des collaborateurs",
+        "searchFailed": "La recherche a échoué",
+        "cancelFailed": "Impossible d'annuler l'invitation",
+        "notImplemented": "Cette fonctionnalité n'est pas encore disponible",
+        "invitationFailed": "Impossible d'envoyer l'invitation",
+        "updateFailed": "La mise à jour a échoué",
+        "updateRoleFailed": "Échec de la mise à jour du rôle",
+        "revokeFailed": "La révocation de l'accès a échoué",
+        "invalidEmailOrUser": "Veuillez sélectionner un utilisateur valide ou saisir un email valide"
     },
     "auth": {
         "loginTitle": "Connexion",
@@ -57,7 +70,31 @@
         "resetPasswordRequestTitle": "Réinitialisation du mot de passe",
         "resetPasswordRequestDescription": "Entrez votre adresse email pour recevoir un lien de réinitialisation",
         "newPassword": "Nouveau mot de passe",
-        "confirmNewPassword": "Confirmer le nouveau mot de passe"
+        "confirmNewPassword": "Confirmer le nouveau mot de passe",
+        "login": {
+            "title": "Connexion requise",
+            "message": "Pour accepter l'invitation de {inviter} pour la carte {map}, vous devez vous connecter avec le compte associé à l'adresse email {email}.",
+            "action": "Se connecter"
+        },
+        "register": {
+            "title": "Création de compte nécessaire",
+            "message": "Pour accepter l'invitation de {inviter} pour la carte {map}, vous devez créer un compte avec l'adresse email {email}.",
+            "action": "Créer un compte"
+        },
+        "logout_and_login": {
+            "title": "Changement de compte nécessaire",
+            "message": "Cette invitation est destinée à l'adresse email {email}. Veuillez vous déconnecter et vous reconnecter avec le compte approprié.",
+            "action": "Changer de compte"
+        },
+        "verifyingEmail": "Vérification de votre email...",
+        "verificationFailed": "Échec de la vérification",
+        "pleaseWait": "Veuillez patienter pendant que nous vérifions votre adresse email.",
+        "emailVerifiedMessage": "Votre adresse email a été vérifiée avec succès. Vous pouvez maintenant vous connecter à votre compte.",
+        "verificationError": "La vérification de votre email a échoué. Le lien peut être expiré ou invalide.",
+        "missingToken": "Token de vérification manquant.",
+        "networkError": "Erreur de connexion. Veuillez vérifier votre connexion internet.",
+        "continueToLogin": "Continuer vers la connexion",
+        "goHome": "Retour à l'accueil"
     },
     "home": {
         "welcome": "Bienvenue sur WayPoint",
@@ -172,10 +209,11 @@
     },
     "sidebar": {
         "menu": "Menu",
-        "addPoi": "Ajouter un POI",
+        "addPoi": "Ajouter un point d'intérêt",
         "manageCategories": "Gérer les catégories",
         "manageCollaborators": "Gérer les collaborateurs",
-        "editMapInfo": "Modifier les informations de la carte",
+        "addCollaborator": "Inviter un collaborateur",
+        "editMapInfo": "Modifier les informations",
         "mapName": "Nom de la carte",
         "mapDescription": "Description de la carte",
         "isPublic": "Carte publique",
@@ -244,5 +282,68 @@
         "created": "Créé le",
         "updated": "Modifié le",
         "by": "par"
+    },
+    "invitation": {
+        "title": "Invitation à collaborer",
+        "description": "{inviter} vous invite à collaborer sur la carte {map} du jeu {game}.",
+        "accept": "Accepter",
+        "reject": "Refuser",
+        "acceptError": "Impossible d'accepter l'invitation",
+        "rejectError": "Impossible de refuser l'invitation",
+        "loadError": "Impossible de charger les détails de l'invitation",
+        "error": "Erreur d'invitation",
+        "createNewAccount": "Créer un nouveau compte",
+        "wrongAccount": {
+            "title": "Mauvais compte",
+            "message": "Cette invitation est pour {invited}, mais vous êtes connecté en tant que {current}.",
+            "logout": "Se déconnecter et changer de compte"
+        },
+        "needsAuth": {
+            "title": "Authentification requise",
+            "message": "{inviter} vous invite à collaborer sur {map}. Veuillez vous connecter avec {email} ou créer un compte."
+        },
+        "status": {
+            "accepted": {
+                "title": "Invitation déjà acceptée",
+                "message": "Cette invitation a déjà été acceptée."
+            },
+            "rejected": {
+                "title": "Invitation refusée",
+                "message": "Cette invitation a été refusée."
+            },
+            "expired": {
+                "title": "Invitation expirée",
+                "message": "Cette invitation a expiré."
+            },
+            "cancelled": {
+                "title": "Invitation annulée",
+                "message": "Cette invitation a été annulée."
+            }
+        },
+        "confirmRevoke": "Révoquer l'accès",
+        "confirmRevokeMessage": "Êtes-vous sûr de vouloir révoquer l'accès pour {user} ?",
+        "activeCollaborators": "Collaborateurs actifs",
+        "pendingInvitations": "Invitations en attente",
+        "cancel": "Annuler",
+        "resend": "Renvoyer",
+        "accessRestricted": "Accès restreint",
+        "onlyOwnerCanManage": "Seul le propriétaire de la carte peut gérer les collaborateurs et les invitations."
+    },
+    "roles": {
+        "viewer": "Observateur",
+        "viewer_description": "Peut voir la carte et les points d'intérêt",
+        "editor": "Éditeur",
+        "editor_description": "Peut créer, modifier et supprimer les points d'intérêt"
+    },
+    "invitationSidebar": {
+        "searchUserOrEmail": "Rechercher un utilisateur ou saisir un email",
+        "emailWillBeInvited": "Cet email sera invité",
+        "inviteByEmail": "Inviter {email}"
+    },
+    "success": {
+        "invitationSent": "Invitation envoyée avec succès",
+        "invitationCancelled": "Invitation annulée avec succès",
+        "roleUpdated": "Rôle mis à jour avec succès",
+        "accessRevoked": "Accès révoqué avec succès"
     }
 }

@@ -12,7 +12,10 @@
         "delete": "Delete",
         "edit": "Edit",
         "search": "Search",
-        "loading": "Loading..."
+        "loading": "Loading...",
+        "yes": "Yes",
+        "no": "No",
+        "unknown": "Unknown"
     },
     "navigation": {
         "home": "Home",
@@ -36,7 +39,18 @@
         "unknown": "An unknown error occurred",
         "deleteFailed": "Unable to delete the map",
         "fetchProfileFailed": "Unable to fetch user profile",
-        "fetchMapsFailed": "Unable to fetch your maps"
+        "fetchMapsFailed": "Unable to fetch your maps",
+        "insufficientPermissions": "You do not have the required permissions for this action",
+        "fetchInvitationsFailed": "Failed to fetch invitations",
+        "fetchCollaboratorsFailed": "Failed to fetch collaborators list",
+        "searchFailed": "Search failed",
+        "cancelFailed": "Failed to cancel invitation",
+        "notImplemented": "This feature is not yet available",
+        "invitationFailed": "Failed to send invitation",
+        "updateFailed": "Update failed",
+        "updateRoleFailed": "Failed to update role",
+        "revokeFailed": "Failed to revoke access",
+        "invalidEmailOrUser": "Please select a valid user or enter a valid email"
     },
     "auth": {
         "loginTitle": "Login",
@@ -56,7 +70,16 @@
         "resetPasswordRequestTitle": "Password reset",
         "resetPasswordRequestDescription": "Enter your email address to receive a reset link",
         "newPassword": "New password",
-        "confirmNewPassword": "Confirm new password"
+        "confirmNewPassword": "Confirm new password",
+        "verifyingEmail": "Verifying your email...",
+        "verificationFailed": "Verification failed",
+        "pleaseWait": "Please wait while we verify your email address.",
+        "emailVerifiedMessage": "Your email address has been successfully verified. You can now log in to your account.",
+        "verificationError": "Email verification failed. The link may be expired or invalid.",
+        "missingToken": "Verification token is missing.",
+        "networkError": "Connection error. Please check your internet connection.",
+        "continueToLogin": "Continue to login",
+        "goHome": "Go home"
     },
     "home": {
         "welcome": "Welcome to WayPoint",
@@ -171,10 +194,11 @@
     },
     "sidebar": {
         "menu": "Menu",
-        "addPoi": "Add POI",
-        "manageCategories": "Manage categories",
-        "manageCollaborators": "Manage collaborators",
-        "editMapInfo": "Edit map information",
+        "addPoi": "Add Point of Interest",
+        "manageCategories": "Manage Categories",
+        "manageCollaborators": "Manage Collaborators",
+        "addCollaborator": "Invite a collaborator",
+        "editMapInfo": "Edit Information",
         "mapName": "Map name",
         "mapDescription": "Map description",
         "isPublic": "Public map",
@@ -243,5 +267,72 @@
         "created": "Created on",
         "updated": "Updated on",
         "by": "by"
+    },
+    "invitation": {
+        "title": "Collaboration Invitation",
+        "description": "{inviter} invites you to collaborate on the map {map} of game {game}.",
+        "accept": "Accept",
+        "reject": "Reject",
+        "acceptError": "Failed to accept invitation",
+        "rejectError": "Failed to reject invitation",
+        "loadError": "Unable to load invitation details",
+        "error": "Invitation Error",
+        "createNewAccount": "Create new account",
+        "wrongAccount": {
+            "title": "Wrong Account",
+            "message": "This invitation is for {invited}, but you are logged in as {current}.",
+            "logout": "Logout and switch account"
+        },
+        "needsAuth": {
+            "title": "Authentication Required",
+            "message": "{inviter} invites you to collaborate on {map}. Please log in with {email} or create an account."
+        },
+        "status": {
+            "accepted": {
+                "title": "Invitation Already Accepted",
+                "message": "This invitation has already been accepted."
+            },
+            "rejected": {
+                "title": "Invitation Rejected",
+                "message": "This invitation has been rejected."
+            },
+            "expired": {
+                "title": "Invitation Expired",
+                "message": "This invitation has expired."
+            },
+            "cancelled": {
+                "title": "Invitation Cancelled",
+                "message": "This invitation has been cancelled."
+            }
+        },
+        "confirmRevoke": "Revoke Access",
+        "confirmRevokeMessage": "Are you sure you want to revoke access for {user}?",
+        "activeCollaborators": "Active Collaborators",
+        "pendingInvitations": "Pending Invitations",
+        "cancel": "Cancel",
+        "resend": "Resend",
+        "accessRestricted": "Access Restricted",
+        "onlyOwnerCanManage": "Only the map owner can manage collaborators and invitations."
+    },
+    "validation": {
+        "required": "This field is required",
+        "email": "Please enter a valid email address"
+    },
+    "roles": {
+        "viewer": "Viewer",
+        "viewer_description": "Can view the map and points of interest",
+        "editor": "Editor",
+        "editor_description": "Can create, edit and delete points of interest"
+    },
+    "success": {
+        "invitationSent": "Invitation sent successfully",
+        "invitationCancelled": "Invitation cancelled successfully",
+        "roleUpdated": "Role updated successfully",
+        "accessRevoked": "Access revoked successfully"
+    },
+    "invitationSidebar": {
+        "searchUserOrEmail": "Search user or enter email",
+        "emailWillBeInvited": "This email will be invited",
+        "inviteByEmail": "Invite {email}"
     }
 }

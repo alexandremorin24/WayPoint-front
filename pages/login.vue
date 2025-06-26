@@ -52,6 +52,7 @@ import { useRouter, useRoute } from 'vue-router'
 const config = useRuntimeConfig()
 const { t } = useI18n()
 const router = useRouter()
+const route = useRoute()
 
 const email = ref('')
 const password = ref('')
@@ -84,7 +85,14 @@ const handleLogin = async () => {
     }
     localStorage.setItem('token', data.token)
     localStorage.setItem('user', JSON.stringify(data.user))
-    router.push('/my-maps')
+    
+    // Rediriger vers la page demandée ou vers my-maps par défaut
+    const redirectTo = route.query.redirect as string
+    if (redirectTo) {
+      router.push(redirectTo)
+    } else {
+      router.push('/my-maps')
+    }
   } catch (err) {
     if (err instanceof Error) {
       error.value = err.message
@@ -97,13 +105,16 @@ const handleLogin = async () => {
 }
 
 onMounted(() => {
+  // Vérifier si l'utilisateur est déjà connecté
   const token = localStorage.getItem('token')
-  if (token) {
-    router.push('/my-maps')
+  const redirectTo = route.query.redirect as string
+  
+  if (token && redirectTo) {
+    // Si connecté ET qu'il y a une redirection demandée, rediriger
+    router.push(redirectTo)
   }
 
   // Check if email was just verified
-  const route = useRoute()
   if (route.query.verified === 'true') {
     success.value = t('auth.emailVerified')
   }

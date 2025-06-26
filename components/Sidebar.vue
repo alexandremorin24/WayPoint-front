@@ -46,8 +46,8 @@
           class="text-h4 text-white d-block w-100 text-center text-wrap"
           style="min-width: 180px; max-width: 100%; word-break: break-word; line-height: 1.1;"
         >
-          {{ map?.gameName || '...' }}
-        </v-list-item-title>
+        {{ map?.gameName || '...' }}
+      </v-list-item-title>
       </v-list-item>
 
       <v-list-item>
@@ -300,23 +300,36 @@
     v-if="map"
     :open="mapInfoSidebarOpenProxy"
     :map="map"
-    :can-edit="map.userRole === 'owner' || map.userRole === 'editor_all'"
+            :can-edit="map.userRole === 'owner' || map.userRole === 'editor'"
     @close="mapInfoSidebarOpenProxy = false"
     @update:map="onMapUpdate"
+  />
+
+  <InvitationSidebar
+    v-if="map"
+    :open="invitationSidebarOpen"
+    :map-id="map.id"
+    :game-id="map.gameId"
+    :user-role="map.userRole"
+    @close="invitationSidebarOpen = false"
   />
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useDisplay } from 'vuetify'
-import type { MapData } from '@/types/map'
+import { useI18n } from 'vue-i18n'
+import type { Map } from '@/types/map'
 import type { Category } from '@/types/category'
 import MapInfoSidebar from './MapInfoSidebar.vue'
+import InvitationSidebar from './InvitationSidebar.vue'
 
 defineOptions({ name: 'AppSidebar' })
 
+const { t } = useI18n()
+
 const props = defineProps<{
-  map: MapData
+  map: Map
   drawer: boolean
   mapInfoSidebarOpen: boolean
   categories?: Category[]
@@ -326,9 +339,10 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'update:drawer', value: boolean): void
   (e: 'add-poi' | 'manage-categories' | 'manage-collaborators'): void
-  (e: 'update:map', map: MapData): void
+  (e: 'update:map', map: Map): void
   (e: 'close-categories'): void
   (e: 'close-map-info'): void
+  (e: 'close-collaborators'): void
   (e: 'update:map-info-sidebar-open', value: boolean): void
   (e: 'update:visible-categories', categoryId: string, visible: boolean): void
   (e: 'update:all-categories-visibility', visible: boolean): void
@@ -344,41 +358,53 @@ const mapInfoSidebarOpenProxy = computed({
   set: val => emit('update:map-info-sidebar-open', val)
 })
 
+const invitationSidebarOpen = ref(false)
+
 const { mobile } = useDisplay()
 const isMobile = computed(() => mobile.value)
 
 const canEdit = computed(() => {
   return props.map?.userRole === 'owner' || 
-         props.map?.userRole === 'editor_all' || 
-         props.map?.userRole === 'editor_own' || 
-         props.map?.userRole === 'contributor'
+         props.map?.userRole === 'editor'
 })
 
-const canManageCollaborators = computed(() => {
-  return props.map?.userRole === 'owner' || 
-         props.map?.userRole === 'editor_all'
+// Seuls les propriétaires peuvent gérer les collaborateurs et modifier les informations de la carte
+const isOwner = computed(() => {
+  return props.map?.userRole === 'owner'
 })
 
 const editOptions = computed(() => {
-  const options = [
-    {
-      title: 'Edit Map Info',
-      action: onEditMapInfo
-    },
-    {
-      title: 'Manage Categories',
-      action: onManageCategories
-    },
-    {
-      title: 'Add POI',
-      action: onAddPoi
-    }
-  ]
+  const options = []
 
-  if (canManageCollaborators.value) {
-    options.splice(1, 0, {
-      title: 'Manage Collaborators',
-      action: () => emit('manage-collaborators')
+  // Seuls les propriétaires peuvent modifier les informations de la carte
+  if (isOwner.value) {
+    options.push({
+      title: t('sidebar.editMapInfo'),
+      action: onEditMapInfo
+    })
+  }
+
+  // Propriétaires et éditeurs peuvent gérer les catégories
+  if (canEdit.value) {
+    options.push({
+      title: t('sidebar.manageCategories'),
+      action: onManageCategories
+    })
+  }
+
+  // Seuls les propriétaires peuvent gérer les collaborateurs
+  if (isOwner.value) {
+    options.push({
+      title: t('sidebar.manageCollaborators'),
+      action: onManageCollaborators
+    })
+  }
+
+  // Propriétaires et éditeurs peuvent ajouter des POI
+  if (canEdit.value) {
+    options.push({
+      title: t('sidebar.addPoi'),
+      action: onAddPoi
     })
   }
 
@@ -421,6 +447,8 @@ const allCategoriesVisible = computed(() => {
 function onAddPoi() {
   mapInfoSidebarOpenProxy.value = false
   drawerProxy.value = false
+  invitationSidebarOpen.value = false
+  emit('close-categories')
   emit('add-poi')
 }
 
@@ -429,18 +457,30 @@ function onEditMapInfo() {
     mapInfoSidebarOpenProxy.value = false
   } else {
     emit('close-categories')
+    invitationSidebarOpen.value = false
     mapInfoSidebarOpenProxy.value = true
   }
 }
 
 function onManageCategories() {
   emit('close-map-info')
+  invitationSidebarOpen.value = false
   emit('manage-categories')
 }
 
-function onMapUpdate(updatedMap: MapData) {
+function onManageCollaborators() {
+  emit('close-map-info')
+  emit('close-categories')
+  invitationSidebarOpen.value = true
+}
+
+function onMapUpdate(updatedMap: Map) {
   emit('update:map', updatedMap)
 }
+
+const canCreatePOI = computed(() => {
+  return props.map?.userRole === 'editor'
+})
 </script>
 
 <style scoped>
