@@ -77,6 +77,10 @@
 </template>
 
 <script setup lang="ts">
+// Protected by middleware: only logged in users can access
+definePageMeta({
+  middleware: 'auth'
+})
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';

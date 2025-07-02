@@ -319,7 +319,7 @@
 import { computed, ref } from 'vue'
 import { useDisplay } from 'vuetify'
 import { useI18n } from 'vue-i18n'
-import type { Map } from '@/types/map'
+import type { MapData } from '@/types/map'
 import type { Category } from '@/types/category'
 import MapInfoSidebar from './MapInfoSidebar.vue'
 import InvitationSidebar from './InvitationSidebar.vue'
@@ -329,7 +329,7 @@ defineOptions({ name: 'AppSidebar' })
 const { t } = useI18n()
 
 const props = defineProps<{
-  map: Map
+  map: MapData
   drawer: boolean
   mapInfoSidebarOpen: boolean
   categories?: Category[]
@@ -339,7 +339,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'update:drawer', value: boolean): void
   (e: 'add-poi' | 'manage-categories' | 'manage-collaborators'): void
-  (e: 'update:map', map: Map): void
+  (e: 'update:map', map: MapData): void
   (e: 'close-categories'): void
   (e: 'close-map-info'): void
   (e: 'close-collaborators'): void
@@ -474,7 +474,7 @@ function onManageCollaborators() {
   invitationSidebarOpen.value = true
 }
 
-function onMapUpdate(updatedMap: Map) {
+function onMapUpdate(updatedMap: MapData) {
   emit('update:map', updatedMap)
 }
 

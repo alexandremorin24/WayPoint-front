@@ -52,12 +52,12 @@ import Sidebar from '~/components/Sidebar.vue'
 import MapViewer from '@/components/MapViewer.vue'
 import CategorySidebar from '@/components/CategorySidebar.vue'
 import axios from 'axios'
-import type { Map } from '@/types/map'
+import type { MapData } from '@/types/map'
 import type { Category } from '@/types/category'
 
 const route = useRoute()
 const router = useRouter()
-const map = ref<Map | null>(null)
+const map = ref<MapData | null>(null)
 const addPoiMode = ref(false)
 const drawer = ref(true)
 const categorySidebarOpen = ref(false)
@@ -65,8 +65,7 @@ const mapInfoSidebarOpen = ref(false)
 const categories = ref<Category[]>([])
 const visibleCategories = ref<string[]>([])
 
-function canAccessMap(mapData: Map, token: string | null): boolean {
-  // Since banned role is removed, no need to check for it
+function canAccessMap(mapData: MapData, token: string | null): boolean {
 
   // If map is public, access granted
   if (mapData.isPublic) {
@@ -163,7 +162,7 @@ function openCategorySidebar() {
   categorySidebarOpen.value = true
 }
 
-function updateMap(updatedMap: Map) {
+function updateMap(updatedMap: MapData) {
   map.value = updatedMap
 }
 

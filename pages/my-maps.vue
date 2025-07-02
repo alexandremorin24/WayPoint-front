@@ -76,6 +76,11 @@
 </template>
 
 <script setup lang="ts">
+// Protected by middleware: only logged in users can access
+definePageMeta({
+  middleware: 'auth'
+})
+
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -92,23 +97,23 @@ const error = ref('')
 const deleteDialog = ref(false)
 const deleteConfirmText = ref('')
 
-// ✅ Format de date lisible
+// Format date
 function formatDate(date?: string | Date) {
   if (!date) return ''
   return new Date(date).toLocaleDateString()
 }
 
-// ✅ Gestion image avec fallback
+// Image fallback
 function getMapImage(map: MapData) {
   return map.thumbnailUrl || map.imageUrl || '/default-map.png'
 }
 
-// ✅ Redirection vers la carte
+// Redirect to map
 function goToMap(mapId: string, gameId: string) {
   router.push(`/maps/${gameId}/${mapId}`)
 }
 
-// ✅ Suppression carte
+// Delete map
 function openDeleteDialog(map: MapData) {
   mapToDelete.value = map
   deleteConfirmText.value = ''
@@ -135,7 +140,7 @@ async function confirmDeleteMap() {
     })
     const resText = await res.text()
     if (!res.ok) throw new Error(t('errors.deleteFailed') + ' (HTTP ' + res.status + ')')
-    maps.value = maps.value.filter(m => m.id !== mapToDelete.value!.id)
+    maps.value = maps.value.filter((m: MapData) => m.id !== mapToDelete.value!.id)
     closeDeleteDialog()
   } catch (e: unknown) {
     console.error('[Suppression] erreur:', e)
@@ -145,7 +150,7 @@ async function confirmDeleteMap() {
   }
 }
 
-// ✅ Chargement cartes personnelles
+// Fetch my maps
 async function fetchMyMaps(): Promise<void> {
   loading.value = true
   error.value = ''

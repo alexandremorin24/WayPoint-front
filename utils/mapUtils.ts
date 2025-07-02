@@ -25,15 +25,18 @@ export interface MapConfig {
 }
 
 export function calculateMapBounds(map: MapData, isMobile: boolean): MapBounds {
+    const imageHeight = map.imageHeight || 1000
+    const imageWidth = map.imageWidth || 1000
+
     const normal: [[number, number], [number, number]] = [
         [0, 0],
-        [map.imageHeight, map.imageWidth]
+        [imageHeight, imageWidth]
     ]
 
     const extendFactor = isMobile ? 0.5 : 0.3
     const extended: [[number, number], [number, number]] = [
-        [-map.imageHeight * extendFactor, -map.imageWidth * extendFactor],
-        [map.imageHeight * (1 + extendFactor), map.imageWidth * (1 + extendFactor)]
+        [-imageHeight * extendFactor, -imageWidth * extendFactor],
+        [imageHeight * (1 + extendFactor), imageWidth * (1 + extendFactor)]
     ]
 
     return { normal, extended }

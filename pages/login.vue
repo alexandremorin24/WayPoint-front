@@ -54,6 +54,9 @@ const { t } = useI18n()
 const router = useRouter()
 const route = useRoute()
 
+// Store d'authentification
+const authStore = useAuthStore()
+
 const email = ref('')
 const password = ref('')
 const showPassword = ref(false)
@@ -83,10 +86,9 @@ const handleLogin = async () => {
     if (!res.ok) {
       throw new Error(data.error || t('errors.loginFailed'))
     }
-    localStorage.setItem('token', data.token)
-    localStorage.setItem('user', JSON.stringify(data.user))
     
-    // Rediriger vers la page demandée ou vers my-maps par défaut
+    authStore.login(data.token, data.user)
+    
     const redirectTo = route.query.redirect as string
     if (redirectTo) {
       router.push(redirectTo)
@@ -105,12 +107,11 @@ const handleLogin = async () => {
 }
 
 onMounted(() => {
-  // Vérifier si l'utilisateur est déjà connecté
-  const token = localStorage.getItem('token')
+  // Check if user is already logged in via store
   const redirectTo = route.query.redirect as string
   
-  if (token && redirectTo) {
-    // Si connecté ET qu'il y a une redirection demandée, rediriger
+  if (authStore.isLoggedIn && redirectTo) {
+    // If logged in AND there is a redirect requested, redirect
     router.push(redirectTo)
   }
 

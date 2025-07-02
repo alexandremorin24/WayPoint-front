@@ -152,6 +152,11 @@
 </template>
 
 <script setup>
+// Protected by middleware: only logged in users can access
+definePageMeta({
+  middleware: 'auth'
+})
+
 import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 

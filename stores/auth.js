@@ -1,82 +1,46 @@
-// import { defineStore } from 'pinia';
+import { defineStore } from 'pinia'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     token: null,
-    user: null,
+    user: null
   }),
 
   getters: {
-    isAuthenticated: (state) => !!state.token,
-    getUser: (state) => state.user,
+    isLoggedIn: (state) => !!state.token,
+    userName: (state) => state.user?.displayName || state.user?.username || ''
   },
 
   actions: {
-    setToken(token) {
-      this.token = token;
+    // User login
+    login(token, user) {
+      this.token = token
+      this.user = user
+      localStorage.setItem('token', token)
+      localStorage.setItem('user', JSON.stringify(user))
+    },
+
+    // User logout
+    logout() {
+      this.token = null
+      this.user = null
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+    },
+
+    // Load data at startup
+    loadFromStorage() {
+      const token = localStorage.getItem('token')
+      const userData = localStorage.getItem('user')
+
       if (token) {
-        localStorage.setItem('token', token);
-      } else {
-        localStorage.removeItem('token');
-      }
-    },
-
-    setUser(user) {
-      this.user = user;
-    },
-
-    async login(email, password) {
-      try {
-        const response = await fetch('/api/backend/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ email, password }),
-        });
-
-        if (!response.ok) {
-          throw new Error('Login failed');
-        }
-
-        const data = await response.json();
-        this.setToken(data.token);
-        this.setUser(data.user);
-        return data;
-      } catch (error) {
-        console.error('Login error:', error);
-        throw error;
-      }
-    },
-
-    async logout() {
-      this.setToken(null);
-      this.setUser(null);
-    },
-
-    async checkAuth() {
-      const token = localStorage.getItem('token');
-      if (token) {
+        this.token = token
         try {
-          const response = await fetch('/api/backend/me', {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
-
-          if (response.ok) {
-            const user = await response.json();
-            this.setToken(token);
-            this.setUser(user);
-            return true;
-          }
-        } catch (error) {
-          console.error('Auth check error:', error);
+          this.user = userData ? JSON.parse(userData) : null
+        } catch {
+          this.user = null
         }
       }
-      this.setToken(null);
-      this.setUser(null);
-      return false;
     }
   }
-}); 
+}) 

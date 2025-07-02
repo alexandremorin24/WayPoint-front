@@ -7,7 +7,8 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxt/image',
     '@nuxtjs/i18n',
-    '@nuxtjs/google-fonts'
+    '@nuxtjs/google-fonts',
+    '@pinia/nuxt'
   ],
 
   googleFonts: {
@@ -37,6 +38,10 @@ export default defineNuxtConfig({
       redirectOn: 'root'
     },
     langDir: 'locales'
+  },
+
+  pinia: {
+    storesDirs: ['./stores/**']
   },
 
   runtimeConfig: {

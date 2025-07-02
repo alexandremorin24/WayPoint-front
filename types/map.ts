@@ -5,7 +5,7 @@ import type { POIData, POIFormData } from './poi'
 export type UserRole = 'owner' | 'editor' | 'viewer'
 
 // Main interface for a map
-export interface Map {
+export interface MapData {
     id: string
     name: string
     description?: string
@@ -13,8 +13,15 @@ export interface Map {
     gameName: string
     ownerId: string
     imagePath?: string
+    imageUrl?: string
+    thumbnailUrl?: string
+    isPublic?: boolean
+    imageWidth?: number
+    imageHeight?: number
     userRole?: UserRole
     isOwner?: boolean
+    createdAt?: string
+    updatedAt?: string
 }
 
 // Interface for map markers
@@ -31,13 +38,7 @@ export interface UserRoleData {
     userId: string
 }
 
-// Interface for POI categories
-export interface Category {
-    id: string
-    name: string
-    icon: string
-    color?: string
-}
+
 
 // Re-export required POI types
 export type { POIData, POIFormData }
