@@ -21,7 +21,8 @@
               v-model="editingMap.description"
               :label="t('sidebar.mapDescription')"
               dense
-              hide-details
+              counter="120"
+              maxlength="120"
               class="mb-2 text-white"
               style="background:#061c36;border-radius:4px;color:#fff;"
             />
@@ -116,8 +117,8 @@ async function saveMap() {
       return
     }
 
-    if (editingMap.value.description && editingMap.value.description.length > 500) {
-      showError(t('errors.descriptionLength'))
+    if (editingMap.value.description && editingMap.value.description.length > 120) {
+      showError(t('errors.descriptionTooLong'))
       return
     }
 

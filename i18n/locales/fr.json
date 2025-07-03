@@ -11,6 +11,7 @@
         "save": "Enregistrer",
         "delete": "Supprimer",
         "edit": "Modifier",
+        "view": "Voir",
         "search": "Rechercher",
         "loading": "Chargement...",
         "yes": "Oui",
@@ -22,6 +23,7 @@
         "profile": "Profil",
         "settings": "Paramètres",
         "map": "Mes cartes",
+        "friendsMap": "Cartes des amis",
         "create": "Créer",
         "explore": "Explorer"
     },
@@ -50,7 +52,9 @@
         "updateFailed": "La mise à jour a échoué",
         "updateRoleFailed": "Échec de la mise à jour du rôle",
         "revokeFailed": "La révocation de l'accès a échoué",
-        "invalidEmailOrUser": "Veuillez sélectionner un utilisateur valide ou saisir un email valide"
+        "invalidEmailOrUser": "Veuillez sélectionner un utilisateur valide ou saisir un email valide",
+        "descriptionTooLong": "La description doit contenir moins de 120 caractères",
+        "uploadError": "Erreur lors de l'upload"
     },
     "auth": {
         "loginTitle": "Connexion",
@@ -112,9 +116,9 @@
     },
     "createMap": {
         "title": "Créer une nouvelle carte",
-        "gameName": "Nom du jeu",
-        "mapName": "Nom de la carte",
-        "description": "Description",
+        "gameName": "* Nom du jeu",
+        "mapName": "* Nom de la carte",
+        "description": "Description (optionnel)",
         "selectOrUpload": "Sélectionnez une image de carte publique existante ou téléchargez-en une nouvelle :",
         "uploadNew": "Télécharger une nouvelle image",
         "mapImage": "Image de la carte",
@@ -122,7 +126,23 @@
         "success": "Carte créée avec succès !",
         "mustBeLogged": "Vous devez être connecté pour créer une carte.",
         "pleaseSelectImage": "Veuillez sélectionner une image.",
-        "isPublic": "Carte publique"
+        "requiredFieldsMissing": "Champs manquants :",
+        "isPublic": "Carte publique",
+        "public": "PUBLIC",
+        "private": "PRIVÉ",
+        "imagePreview": "Aperçu de l'image",
+        "noImageSelected": "Aucune image sélectionnée",
+        "clickOrDragToUpload": "Cliquez ou glissez-déposez pour ajouter une carte",
+        "clickOrDragToChange": "Cliquez ou glissez-déposez pour changer l'image",
+        "existingMapsInfo": "Saisissez un nom de jeu dans le champ correspondant, les images de cartes existantes pour ce jeu apparaîtront ici",
+        "availableMapsForGame": "Images disponibles pour ce jeu :",
+        "existingMapSelected": "Carte existante sélectionnée",
+        "uploadImage": "Télécharger une carte",
+        "changeImage": "Changer l'image",
+        "mapCount": {
+            "singular": "carte",
+            "plural": "cartes"
+        }
     },
     "mapDetails": {
         "title": "Carte :",
@@ -152,15 +172,61 @@
         "cancel": "Annuler",
         "newPassword": "Nouveau mot de passe",
         "confirmPassword": "Confirmer le nouveau mot de passe",
-        "currentPassword": "Mot de passe actuel"
+        "currentPassword": "Mot de passe actuel",
+        "avatar": "Photo de profil",
+        "clickToChangeAvatar": "Cliquez pour changer la photo de profil",
+        "statistics": "Statistiques",
+        "totalMaps": "Cartes créées",
+        "totalPois": "POIs créés",
+        "sharedMaps": "Cartes partagées",
+        "publicMaps": "Cartes publiques",
+        "collaborations": "Collaborations",
+        "invitationsSent": "Invitations envoyées",
+        "votes": "Votes donnés",
+        "categoriesCreated": "Catégories créées",
+        "lastActivity": "Dernière activité",
+        "avatarUpdated": "Photo de profil mise à jour avec succès",
+        "profileUpdated": "Profil mis à jour avec succès"
     },
     "myMaps": {
         "title": "Mes cartes",
+        "friendsTitle": "Cartes des amis",
         "noMaps": "Aucune carte créée.",
+        "createFirst": "Créez votre première carte pour commencer !",
+        "createMap": "Créer une carte",
+        "filterOwned": "Mes cartes",
+        "filterShared": "Cartes des amis",
+        "noFilteredMaps": "Aucune carte visible",
+        "adjustFilters": "Ajustez les filtres pour voir vos cartes.",
         "deleteTitle": "Supprimer la carte",
         "deleteWarning": "La suppression est définitive. Cette action ne peut pas être annulée.",
         "deleteExplain": "Pour confirmer, tapez delete dans le champ ci-dessous.",
         "deleteLabel": "Tapez delete pour confirmer"
+    },
+    "explore": {
+        "title": "Explorer",
+        "searchPlaceholder": "Rechercher des cartes...",
+        "sortLabel": "Trier par",
+        "sort": {
+            "newest": "Plus récent",
+            "oldest": "Plus ancien",
+            "nameAZ": "Nom A-Z",
+            "nameZA": "Nom Z-A"
+        },
+        "searchCriteria": {
+            "all": "Tout",
+            "mapName": "Nom de la carte",
+            "gameName": "Nom du jeu",
+            "creatorName": "Nom du créateur"
+        },
+        "noMaps": "Aucune carte publique disponible.",
+        "noMapsDescription": "Revenez plus tard pour découvrir de nouvelles cartes !",
+        "createdBy": "Créé par",
+        "noDescription": "Aucune description disponible.",
+        "noFilteredMaps": "Aucune carte trouvée",
+        "adjustSearch": "Ajustez votre recherche pour voir plus de cartes.",
+        "clickToSearch": "Cliquer pour rechercher les cartes de ce créateur",
+        "clickToSearchGame": "Cliquer pour rechercher les cartes de ce jeu"
     },
     "landing": {
         "hero": {

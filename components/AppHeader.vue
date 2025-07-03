@@ -204,6 +204,7 @@ const authButtons: NavigationLink[] = [
 
 const userMenuItems: UserMenuItem[] = [
   { route: '/my-maps', textKey: 'navigation.map' },
+  { route: '/my-maps?tab=shared', textKey: 'navigation.friendsMap' },
   { route: '/profil', textKey: 'navigation.profile' },
   { action: 'logout', textKey: 'common.logout' }
 ]

@@ -11,6 +11,7 @@
         "save": "Save",
         "delete": "Delete",
         "edit": "Edit",
+        "view": "View",
         "search": "Search",
         "loading": "Loading...",
         "yes": "Yes",
@@ -22,6 +23,7 @@
         "profile": "Profile",
         "settings": "Settings",
         "map": "My maps",
+        "friendsMap": "Friends maps",
         "create": "Create",
         "explore": "Explore"
     },
@@ -50,7 +52,9 @@
         "updateFailed": "Update failed",
         "updateRoleFailed": "Failed to update role",
         "revokeFailed": "Failed to revoke access",
-        "invalidEmailOrUser": "Please select a valid user or enter a valid email"
+        "invalidEmailOrUser": "Please select a valid user or enter a valid email",
+        "descriptionTooLong": "Description must be less than 120 characters",
+        "uploadError": "Upload error"
     },
     "auth": {
         "loginTitle": "Login",
@@ -97,9 +101,9 @@
     },
     "createMap": {
         "title": "Create a new map",
-        "gameName": "Game name",
-        "mapName": "Map name",
-        "description": "Description",
+        "gameName": "* Game name",
+        "mapName": "* Map name",
+        "description": "Description (optional)",
         "selectOrUpload": "Select an existing public map image or upload a new one:",
         "uploadNew": "Upload a new image",
         "mapImage": "Map image",
@@ -107,7 +111,23 @@
         "success": "Map created successfully!",
         "mustBeLogged": "You must be logged in to create a map.",
         "pleaseSelectImage": "Please select an image.",
-        "isPublic": "Public map"
+        "requiredFieldsMissing": "Missing fields:",
+        "isPublic": "Public map",
+        "public": "PUBLIC",
+        "private": "PRIVATE",
+        "imagePreview": "Image preview",
+        "noImageSelected": "No image selected",
+        "clickOrDragToUpload": "Click or drag & drop to add a map",
+        "clickOrDragToChange": "Click or drag & drop to change the image",
+        "existingMapsInfo": "Enter a game name in the corresponding field, existing map images for this game will appear here",
+        "availableMapsForGame": "Available images for this game:",
+        "existingMapSelected": "Existing map selected",
+        "uploadImage": "Upload map",
+        "changeImage": "Change image",
+        "mapCount": {
+            "singular": "map",
+            "plural": "maps"
+        }
     },
     "mapDetails": {
         "title": "Map:",
@@ -137,15 +157,61 @@
         "cancel": "Cancel",
         "newPassword": "New password",
         "confirmPassword": "Confirm new password",
-        "currentPassword": "Current password"
+        "currentPassword": "Current password",
+        "avatar": "Profile photo",
+        "clickToChangeAvatar": "Click to change profile photo",
+        "statistics": "Statistics",
+        "totalMaps": "Maps created",
+        "totalPois": "POIs created",
+        "sharedMaps": "Shared maps",
+        "publicMaps": "Public maps",
+        "collaborations": "Collaborations",
+        "invitationsSent": "Invitations sent",
+        "votes": "Votes given",
+        "categoriesCreated": "Categories created",
+        "lastActivity": "Last activity",
+        "avatarUpdated": "Profile picture updated successfully",
+        "profileUpdated": "Profile updated successfully"
     },
     "myMaps": {
         "title": "My maps",
+        "friendsTitle": "Friends maps",
         "noMaps": "No maps created.",
+        "createFirst": "Create your first map to get started!",
+        "createMap": "Create map",
+        "filterOwned": "My maps",
+        "filterShared": "Friends maps",
+        "noFilteredMaps": "No maps visible",
+        "adjustFilters": "Adjust filters to see your maps.",
         "deleteTitle": "Delete map",
         "deleteWarning": "Deletion is permanent. This action cannot be undone.",
         "deleteExplain": "To confirm, type delete in the field below.",
         "deleteLabel": "Type delete to confirm"
+    },
+    "explore": {
+        "title": "Explore",
+        "searchPlaceholder": "Search for maps...",
+        "sortLabel": "Sort by",
+        "sort": {
+            "newest": "Newest",
+            "oldest": "Oldest",
+            "nameAZ": "Name A-Z",
+            "nameZA": "Name Z-A"
+        },
+        "searchCriteria": {
+            "all": "All",
+            "mapName": "Map name",
+            "gameName": "Game name",
+            "creatorName": "Creator name"
+        },
+        "noMaps": "No public maps available.",
+        "noMapsDescription": "Come back later to discover new maps!",
+        "createdBy": "Created by",
+        "clickToSearch": "Click to search this creator",
+        "clickToSearchGame": "Click to search this game",
+        "noDescription": "No description available.",
+        "noFilteredMaps": "No maps found",
+        "adjustSearch": "Adjust your search to see more maps."
     },
     "landing": {
         "hero": {

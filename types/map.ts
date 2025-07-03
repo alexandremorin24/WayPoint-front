@@ -12,6 +12,8 @@ export interface MapData {
     gameId: string
     gameName: string
     ownerId: string
+    ownerName?: string
+    ownerEmail?: string
     imagePath?: string
     imageUrl?: string
     thumbnailUrl?: string

@@ -1,44 +1,232 @@
 <template>
   <client-only>
-    <v-container>
-      <v-row justify="center">
-        <v-col cols="12" md="10">
-          <v-card class="pa-4">
-            <v-card-title class="text-h4 mb-4">
-              {{ $t('myMaps.title') }}
-            </v-card-title>
+    <v-container fluid class="pa-0 min-height-screen" style="background-color: #003566;">
+      <v-container class="pt-16 pb-8">
+        <!-- Main title -->
+        <v-row justify="center">
+          <v-col cols="12" lg="10" xl="8">
+            <div class="d-flex align-center justify-space-between flex-wrap gap-4" style="align-items: end!important;">
+                              <h1 class="text-h3 font-weight-bold d-flex align-center gap-3" style="color: #FFC300;">
+                  <v-icon :icon="pageIcon" size="50" style="color: #FFC300;"></v-icon>
+                  &nbsp;{{ pageTitle }}
+                </h1>
+              
+              <!-- Navigation tabs (visible only if there are maps) -->
+              <div v-if="ownedMaps.length > 0 || sharedMaps.length > 0">
+                <v-tabs
+                  v-model="currentTab"
+                  color="secondary"
+                  class="maps-tabs"
+                  @update:model-value="onTabChange"
+                >
+                  <v-tab value="owned" class="text-white font-weight-bold">
+                    {{ $t('myMaps.filterOwned') }}
+                  </v-tab>
+                  
+                  <v-tab value="shared" class="text-white font-weight-bold">
+                    {{ $t('myMaps.filterShared') }}
+                  </v-tab>
+                </v-tabs>
+              </div>
+            </div>
+          </v-col>
+        </v-row>
 
+        <!-- Error and loading messages -->
+        <v-row v-if="error || loading" justify="center">
+          <v-col cols="12" md="8">
             <v-alert v-if="error" type="error" class="mb-4">{{ error }}</v-alert>
-            <v-progress-circular v-if="loading" indeterminate color="primary" class="my-8" />
+            <div v-if="loading" class="text-center py-8">
+              <v-progress-circular indeterminate color="secondary" size="50" />
+              <p class="text-white mt-4">{{ $t('common.loading') }}</p>
+            </div>
+          </v-col>
+        </v-row>
 
-            <v-row v-if="!loading && maps.length">
-              <v-col v-for="map in maps" :key="map.id" cols="12" sm="6" md="4" lg="3">
-                <v-card class="mb-4">
-                  <NuxtLink :to="`/maps/${map.gameId}/${map.id}`">
-                    <v-img :src="getMapImage(map)" height="180px" cover />
-                  </NuxtLink>
-                  <v-card-title>{{ map.name }}</v-card-title>
-                  <v-card-subtitle>{{ formatDate(map.updatedAt || map.createdAt) }}</v-card-subtitle>
-                  <v-card-text>{{ map.description }}</v-card-text>
-                  <v-card-actions>
-                    <v-btn color="primary" @click="goToMap(map.id, map.gameId)">
-                      {{ $t('common.edit') }}
-                    </v-btn>
-                    <v-btn color="error" variant="outlined" @click="openDeleteDialog(map)">
-                      {{ $t('common.delete') }}
-                    </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-col>
-            </v-row>
+        <!-- Main content -->
+        <v-row v-if="!loading && !error" justify="center" style="margin-top: 0px;">
+          <v-col cols="12" lg="10" xl="8">
+            <!-- Message if no maps -->
+            <div v-if="ownedMaps.length === 0 && sharedMaps.length === 0" class="text-center py-8">
+              <v-icon size="64" color="grey-lighten-2" class="mb-4">mdi-map-outline</v-icon>
+              <h3 class="text-h5 text-white mb-2">{{ $t('myMaps.noMaps') }}</h3>
+              <p class="text-grey-lighten-2 mb-4">{{ $t('myMaps.createFirst') }}</p>
+              <v-btn color="secondary" size="large" @click="$router.push('/maps/create')">
+                {{ $t('myMaps.createMap') }}
+              </v-btn>
+            </div>
 
-            <v-alert v-else-if="!loading && !maps.length" type="info">
-              {{ $t('myMaps.noMaps') }}
-            </v-alert>
-          </v-card>
-        </v-col>
-      </v-row>
+            <!-- Content with maps -->
+            <div v-else>
+              <!-- Unified list of maps -->
+              <div v-if="filteredMaps.length > 0">
+                <!-- Grid of maps -->
+                <v-row>
+                  <v-col 
+                    v-for="map in paginatedMaps" 
+                    :key="`${map.isOwned ? 'owned' : 'shared'}-${map.id}`" 
+                    cols="12" 
+                    md="6"
+                  >
+                    <v-card 
+                      class="flex-grow-1" 
+                      color="primary" 
+                      dark
+                      elevation="4"
+                    >
+                      <div class="d-flex">
+                        <!-- Map thumbnail -->
+                        <div class="map-thumbnail-container">
+                          <NuxtLink :to="`/maps/${map.gameId}/${map.id}`">
+                            <v-img 
+                              :src="getMapImage(map)" 
+                              class="map-thumbnail"
+                              cover
+                            >
+                              <template v-slot:placeholder>
+                                <div class="d-flex fill-height align-center justify-center bg-white">
+                                  <v-icon size="32" color="grey-lighten-2">mdi-map</v-icon>
+                                </div>
+                              </template>
+                            </v-img>
+                          </NuxtLink>
+                        </div>
 
+                        <!-- Map content -->
+                        <div class="flex-grow-1 d-flex flex-column">
+                          <v-card-text class="pb-2">
+                            <!-- Game name + Badges ROLE and VISIBILITY -->
+                            <div class="d-flex align-center justify-space-between mb-1">
+                              <p class="text-caption text-grey-lighten-1 mb-0 game-name-text">
+                                {{ map.gameName || 'GAME NAME' }}
+                              </p>
+                              <div class="d-flex badges-container">
+                                <!-- Public/private visibility badge -->
+                                <v-chip 
+                                  size="x-small" 
+                                  :class="[
+                                    'text-white font-weight-bold',
+                                    map.isPublic ? 'visibility-badge-public' : 'visibility-badge-private'
+                                  ]"
+                                >
+                                  {{ map.isPublic ? $t('createMap.public') : $t('createMap.private') }}
+                                </v-chip>
+                                
+                                <!-- Role badge -->
+                                <v-chip 
+                                  :color="map.isOwned ? '' : (map.userRole === 'editor' ? 'orange' : 'blue-lighten-2')" 
+                                  size="x-small" 
+                                  :class="map.isOwned ? 'owner-badge text-black' : 'text-white'"
+                                  class="font-weight-bold"
+                                >
+                                  {{ map.isOwned ? 'OWNER' : map.userRole?.toUpperCase() }}
+                                </v-chip>
+                              </div>
+                            </div>
+                            
+                            <!-- Map name -->
+                            <h3 class="text-h6 font-weight-bold text-white mb-1" style="line-height: 1.2;">
+                              {{ map.name }}
+                            </h3>
+                            
+                            <!-- Map owner (only for shared maps) -->
+                            <p v-if="!map.isOwned" class="text-caption text-blue-lighten-2 mb-1">
+                              par @{{ map.ownerName || map.ownerEmail }}
+                            </p>
+                            
+                            <!-- Map description -->
+                            <p class="text-body-2 text-grey-lighten-2 mb-0" style="font-size: 0.75rem;">
+                              {{ (map.description || 'Map description Lorem ipsum dolor sit amet, consectetur adipiscing elit.').slice(0, 120) }}{{ (map.description || '').length > 120 ? '...' : '' }}
+                            </p>
+                          </v-card-text>
+
+                          <!-- Actions -->
+                          <v-card-actions class="pt-0 px-4 pb-4 justify-end">
+                            <!-- Actions for owned maps -->
+                            <template v-if="map.isOwned">
+                              <v-btn
+                                variant="outlined"
+                                size="small"
+                                class="mr-2 text-secondary delete-btn"
+                                @click="openDeleteDialog(map)"
+                              >
+                                {{ $t('common.delete') }}
+                              </v-btn>
+                              
+                              <v-btn
+                                size="small"
+                                class="font-weight-bold edit-btn-owned"
+                                @click="goToMap(map.id, map.gameId)"
+                              >
+                                {{ $t('common.edit') }}
+                              </v-btn>
+                            </template>
+
+                            <!-- Actions for shared maps -->
+                            <template v-else>
+                              <v-btn
+                                size="small"
+                                class="view-edit-btn-shared"
+                                @click="goToMap(map.id, map.gameId)"
+                              >
+                                {{ map.userRole === 'editor' ? $t('common.edit') : $t('common.view') }}
+                              </v-btn>
+                            </template>
+                          </v-card-actions>
+                        </div>
+                      </div>
+                    </v-card>
+                  </v-col>
+                </v-row>
+
+                <!-- Pagination -->
+                <div v-if="filteredMaps.length > itemsPerPage" class="text-center mt-6">
+                  <div class="custom-pagination-container">
+                    <!-- Previous button -->
+                    <button 
+                      class="pagination-btn pagination-prev"
+                      :disabled="currentPage === 1"
+                      @click="goToPreviousPage"
+                    >
+                      PREV
+                    </button>
+
+                    <!-- Page numbers -->
+                    <button
+                      v-for="page in visiblePages"
+                      :key="page"
+                      class="pagination-btn pagination-number"
+                      :class="{ 'pagination-active': page === currentPage }"
+                      @click="goToPage(page)"
+                    >
+                      {{ page }}
+                    </button>
+
+                    <!-- Next button -->
+                    <button 
+                      class="pagination-btn pagination-next"
+                      :disabled="currentPage === totalPages"
+                      @click="goToNextPage"
+                    >
+                      NEXT
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Message if no maps visible after filtering -->
+              <div v-else class="text-center py-8">
+                <v-icon size="64" color="grey-lighten-2" class="mb-4">mdi-filter-outline</v-icon>
+                <h3 class="text-h5 text-white mb-2">{{ $t('myMaps.noFilteredMaps') }}</h3>
+                <p class="text-grey-lighten-2 mb-4">{{ $t('myMaps.adjustFilters') }}</p>
+              </div>
+            </div>
+          </v-col>
+        </v-row>
+
+      </v-container>
+
+      <!-- Delete dialog -->
       <v-dialog v-model="deleteDialog" max-width="500">
         <v-card>
           <v-card-title class="text-h5">
@@ -81,21 +269,159 @@ definePageMeta({
   middleware: 'auth'
 })
 
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted, computed, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import type { MapData } from '@/types/map'
 
 const { t } = useI18n()
 const router = useRouter()
 
-const maps = ref<MapData[]>([])
+const ownedMaps = ref<MapData[]>([])
+const sharedMaps = ref<MapData[]>([])
 const mapToDelete = ref<MapData | null>(null)
 
 const loading = ref(true)
 const error = ref('')
 const deleteDialog = ref(false)
 const deleteConfirmText = ref('')
+
+// View mode (mutually exclusive)
+const viewMode = ref<'owned' | 'shared'>('owned')
+const currentTab = ref<'owned' | 'shared'>('owned')
+
+// Initialize tab according to URL parameters
+const route = useRoute()
+const initialTab = (route.query.tab as string) || 'owned'
+if (initialTab === 'shared' || initialTab === 'owned') {
+  viewMode.value = initialTab
+  currentTab.value = initialTab
+}
+
+// Listen to URL parameters changes
+watch(() => route.query.tab, (newTab) => {
+  const tab = (newTab as string) || 'owned'
+  if (tab === 'shared' || tab === 'owned') {
+    setViewMode(tab)
+  }
+})
+
+// Pagination
+const currentPage = ref(1)
+const itemsPerPage = ref(4) // 4 maps max per page
+
+// Interface for maps with metadata
+interface MapWithMetadata extends MapData {
+  isOwned: boolean
+  sortDate: Date
+}
+
+// Dynamic title according to active tab
+const pageTitle = computed(() => {
+  return viewMode.value === 'shared' ? t('myMaps.friendsTitle') : t('myMaps.title')
+})
+
+// Dynamic icon according to active tab
+const pageIcon = computed(() => {
+  return viewMode.value === 'shared' ? 'mdi-account-group' : 'mdi-map'
+})
+
+// Combined and filtered list of maps
+const combinedMaps = computed(() => {
+  const owned: MapWithMetadata[] = ownedMaps.value.map(map => ({
+    ...map,
+    isOwned: true,
+    sortDate: new Date(map.createdAt || 0) // For now we use createdAt, later we will use lastEditedAt
+  }))
+  
+  const shared: MapWithMetadata[] = sharedMaps.value.map(map => ({
+    ...map,
+    isOwned: false,
+    sortDate: new Date(map.createdAt || 0) // For now we use createdAt, later we will use lastEditedAt
+  }))
+  
+  // Merge and sort by modification date (most recent first)
+  return [...owned, ...shared].sort((a, b) => b.sortDate.getTime() - a.sortDate.getTime())
+})
+
+// Filtered maps according to view mode
+const filteredMaps = computed(() => {
+  return combinedMaps.value.filter(map => {
+    if (viewMode.value === 'owned') return map.isOwned
+    if (viewMode.value === 'shared') return !map.isOwned
+    return false
+  })
+})
+
+// Pagination for the filtered list
+const totalPages = computed(() => {
+  return Math.ceil(filteredMaps.value.length / itemsPerPage.value)
+})
+
+const paginatedMaps = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value
+  const end = start + itemsPerPage.value
+  return filteredMaps.value.slice(start, end)
+})
+
+// Pages visible in the pagination
+const visiblePages = computed(() => {
+  const pages = []
+  const total = totalPages.value
+  const current = currentPage.value
+  
+  if (total <= 5) {
+    for (let i = 1; i <= total; i++) {
+      pages.push(i)
+    }
+  } else {
+    let start = Math.max(1, current - 2)
+    let end = Math.min(total, start + 4)
+    
+    if (end - start < 4) {
+      start = Math.max(1, end - 4)
+    }
+    
+    for (let i = start; i <= end; i++) {
+      pages.push(i)
+    }
+  }
+  
+  return pages
+})
+
+// Function to control the view mode
+function setViewMode(mode: 'owned' | 'shared') {
+  viewMode.value = mode
+  currentTab.value = mode
+  currentPage.value = 1 // Reset pagination
+}
+
+// Function called when the tab changes
+function onTabChange(tab: unknown) {
+  if (tab === 'owned' || tab === 'shared') {
+    setViewMode(tab)
+  }
+}
+
+// Pagination functions
+function goToPreviousPage() {
+  if (currentPage.value > 1) {
+    currentPage.value--
+  }
+}
+
+function goToNextPage() {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++
+  }
+}
+
+function goToPage(page: number) {
+  if (page >= 1 && page <= totalPages.value) {
+    currentPage.value = page
+  }
+}
 
 // Format date
 function formatDate(date?: string | Date) {
@@ -119,6 +445,7 @@ function openDeleteDialog(map: MapData) {
   deleteConfirmText.value = ''
   deleteDialog.value = true
 }
+
 function closeDeleteDialog() {
   deleteDialog.value = false
   mapToDelete.value = null
@@ -140,7 +467,8 @@ async function confirmDeleteMap() {
     })
     const resText = await res.text()
     if (!res.ok) throw new Error(t('errors.deleteFailed') + ' (HTTP ' + res.status + ')')
-    maps.value = maps.value.filter((m: MapData) => m.id !== mapToDelete.value!.id)
+    // Remove from the appropriate list
+    ownedMaps.value = ownedMaps.value.filter((m: MapData) => m.id !== mapToDelete.value!.id)
     closeDeleteDialog()
   } catch (e: unknown) {
     console.error('[Suppression] erreur:', e)
@@ -161,9 +489,25 @@ async function fetchMyMaps(): Promise<void> {
       return
     }
 
-    const meRes = await fetch('/api/backend/me', {
-      headers: { Authorization: `Bearer ${token}` }
-    })
+    // Get owned and shared maps in parallel
+    const [meRes, ownedRes, sharedRes] = await Promise.all([
+      fetch('/api/backend/me', {
+        headers: { Authorization: `Bearer ${token}` }
+      }),
+      fetch('/api/backend/me', {
+        headers: { Authorization: `Bearer ${token}` }
+      }).then(async (res) => {
+        if (!res.ok) throw new Error(t('errors.fetchProfileFailed'))
+        const me = await res.json()
+        return fetch(`/api/backend/maps/owner/${me.id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+      }),
+      fetch('/api/backend/maps/shared', {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+    ])
+
     if (!meRes.ok) {
       if (meRes.status === 403) {
         router.push('/login')
@@ -172,20 +516,16 @@ async function fetchMyMaps(): Promise<void> {
       throw new Error(t('errors.fetchProfileFailed'))
     }
 
-    const me: { id: string } = await meRes.json()
+    if (!ownedRes.ok) throw new Error(t('errors.fetchMapsFailed'))
+    if (!sharedRes.ok) throw new Error(t('errors.fetchMapsFailed'))
 
-    const mapsRes = await fetch(`/api/backend/maps/owner/${me.id}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-    if (!mapsRes.ok) throw new Error(t('errors.fetchMapsFailed'))
+    const [ownedRaw, sharedRaw]: [MapData[], MapData[]] = await Promise.all([
+      ownedRes.json(),
+      sharedRes.json()
+    ])
 
-    const raw: MapData[] = await mapsRes.json()
-    maps.value = raw.sort((a: MapData, b: MapData) => {
-      const dateA = a.updatedAt || a.createdAt
-      const dateB = b.updatedAt || b.createdAt
-      if (!dateA || !dateB) return 0
-      return new Date(dateB).getTime() - new Date(dateA).getTime()
-    })
+    ownedMaps.value = ownedRaw
+    sharedMaps.value = sharedRaw
   } catch (e: unknown) {
     error.value = e instanceof Error ? e.message : t('errors.unknown')
   } finally {
@@ -195,3 +535,163 @@ async function fetchMyMaps(): Promise<void> {
 
 onMounted(fetchMyMaps)
 </script>
+
+<style scoped>
+
+.map-thumbnail-container {
+  width: 150px;
+  height: 150px;
+  margin: 16px;
+  flex-shrink: 0;
+}
+
+.map-thumbnail {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Custom pagination */
+.custom-pagination-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 20px 0;
+}
+
+.pagination-btn {
+  min-width: 50px;
+  height: 40px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pagination-prev,
+.pagination-next {
+  background-color: #001D3D;
+  color: white;
+  padding: 0 16px;
+  min-width: 70px;
+}
+
+.pagination-prev:hover:not(:disabled),
+.pagination-next:hover:not(:disabled) {
+  background-color: #032040;
+}
+
+.pagination-prev:disabled,
+.pagination-next:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-number {
+  background-color: transparent;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.pagination-number:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.pagination-number.pagination-active {
+  background-color: #FFC300 !important;
+  color: #001D3D !important;
+  border-color: #FFC300;
+}
+
+.pagination-number.pagination-active:hover {
+  background-color: #FFC300 !important;
+}
+
+/* Styles for tabs */
+.maps-tabs {
+  width: fit-content;
+}
+
+.maps-tabs .v-tab {
+  background-color: rgba(255, 255, 255, 0.1);
+  margin: 0 4px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  padding: 8px 12px;
+  width: auto;
+  white-space: nowrap;
+  margin-top: 16px;
+}
+
+.maps-tabs .v-btn {
+  height: fit-content;
+}
+
+
+.maps-tabs .v-tab:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.maps-tabs .v-tab--selected {
+  background-color: #FFC300 !important;
+  color: #001D3D !important;
+}
+
+.maps-tabs .v-tab--selected .v-icon {
+  color: #001D3D !important;
+}
+
+.maps-tabs .v-tabs-slider {
+  display: none; /* Hide the default Vuetify line */
+}
+
+/* Badge OWNER with theme color */
+.owner-badge {
+  background-color: #FFC300 !important;
+}
+
+/* Map buttons */
+.delete-btn {
+  border-color: #FFC300 !important;
+}
+
+.edit-btn-owned {
+  background-color: #FFC300 !important;
+  color: #001D3D !important;
+}
+
+.view-edit-btn-shared {
+  background-color: #81D4FA !important;
+  color: #001D3D !important;
+  border: none !important;
+}
+
+/* Game name text */
+.game-name-text {
+  font-size: 0.65rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+}
+
+/* Visibility badges */
+.visibility-badge-public {
+  background-color: #4CAF50 !important;
+}
+
+.visibility-badge-private {
+  background-color: #f44336 !important; 
+}
+
+/* Badges container */
+.badges-container {
+  flex-wrap: wrap;
+  gap: 4px;
+}
+</style>

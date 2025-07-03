@@ -376,15 +376,15 @@ const isOwner = computed(() => {
 const editOptions = computed(() => {
   const options = []
 
-  // Seuls les propriétaires peuvent modifier les informations de la carte
-  if (isOwner.value) {
+  // Only owners and editors can edit map info
+  if (canEdit.value) {
     options.push({
       title: t('sidebar.editMapInfo'),
       action: onEditMapInfo
     })
   }
 
-  // Propriétaires et éditeurs peuvent gérer les catégories
+  // Only owners and editors can manage categories
   if (canEdit.value) {
     options.push({
       title: t('sidebar.manageCategories'),
@@ -392,7 +392,7 @@ const editOptions = computed(() => {
     })
   }
 
-  // Seuls les propriétaires peuvent gérer les collaborateurs
+  // Only owners can manage collaborators
   if (isOwner.value) {
     options.push({
       title: t('sidebar.manageCollaborators'),
@@ -400,7 +400,7 @@ const editOptions = computed(() => {
     })
   }
 
-  // Propriétaires et éditeurs peuvent ajouter des POI
+  // Only owners and editors can add POIs
   if (canEdit.value) {
     options.push({
       title: t('sidebar.addPoi'),
