@@ -43,121 +43,123 @@
 
       <!-- Authentication Section -->
       <div class="auth-section">
-        <template v-if="!isLoggedIn">
-          <v-btn 
-            v-for="authBtn in authButtons" 
-            :key="authBtn.route"
-            :to="authBtn.route"
-            class="nav-btn"
-            v-bind="defaultButtonProps"
-          >
-            {{ $t(authBtn.textKey).toUpperCase() }}
-          </v-btn>
-        </template>
-        
-        <template v-else>
-          <v-menu location="bottom end" :offset="8">
-            <template #activator="{ props }">
-              <v-btn
-                v-bind="{ ...props, ...userMenuButtonProps }"
-                class="nav-btn user-menu-btn"
-              >
-                <svg-icon 
-                  type="mdi" 
-                  :path="mdiAccount" 
-                  class="user-icon" 
-                  width="20" 
-                  height="20" 
-                />
-                {{ userName || 'Profile' }}
-              </v-btn>
-            </template>
-            
-            <v-list class="user-menu">
-              <v-list-item 
-                v-for="item in userMenuItems" 
-                :key="item.route || item.action"
-                :to="item.route"
-                @click="item.action && handleMenuAction(item.action)"
-                class="user-menu-item"
-              >
-                <v-list-item-title class="user-menu-text">
-                  {{ $t(item.textKey).toUpperCase() }}
-                </v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </template>
+        <ClientOnly>
+          <template v-if="!isLoggedIn">
+            <v-btn 
+              v-for="authBtn in authButtons" 
+              :key="authBtn.route"
+              :to="authBtn.route"
+              class="nav-btn"
+              v-bind="defaultButtonProps"
+            >
+              {{ $t(authBtn.textKey).toUpperCase() }}
+            </v-btn>
+          </template>
+          
+          <template v-else>
+            <v-menu location="bottom end" :offset="8">
+              <template #activator="{ props }">
+                <v-btn
+                  v-bind="{ ...props, ...userMenuButtonProps }"
+                  class="nav-btn user-menu-btn"
+                >
+                  <svg-icon 
+                    type="mdi" 
+                    :path="mdiAccount" 
+                    class="user-icon" 
+                    width="20" 
+                    height="20" 
+                  />
+                  {{ userName || 'Profile' }}
+                </v-btn>
+              </template>
+              
+              <v-list class="user-menu">
+                <v-list-item 
+                  v-for="item in userMenuItems" 
+                  :key="item.route || item.action"
+                  :to="item.route"
+                  @click="item.action && handleMenuAction(item.action)"
+                  class="user-menu-item"
+                >
+                  <v-list-item-title class="user-menu-text">
+                    {{ $t(item.textKey).toUpperCase() }}
+                  </v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </template>
+        </ClientOnly>
       </div>
     </nav>
 
     <!-- Mobile Menu Drawer -->
-    <v-navigation-drawer
-      v-model="mobileMenuOpen"
-      location="end"
-      temporary
-      class="mobile-drawer"
-      width="280"
-    >
-      <v-list class="mobile-menu-list">
-        <!-- Navigation Links -->
-        <v-list-item
-          v-for="link in navigationLinks"
-          :key="link.route"
-          :to="link.route"
-          @click="mobileMenuOpen = false"
-          class="mobile-menu-item"
-        >
-          <v-list-item-title class="mobile-menu-text">
-            {{ $t(link.textKey).toUpperCase() }}
-          </v-list-item-title>
-        </v-list-item>
-        
-        <!-- Create Button (conditional routing) -->
-        <v-list-item
-          @click="handleCreateClickMobile"
-          class="mobile-menu-item"
-        >
-          <v-list-item-title class="mobile-menu-text">
-            {{ $t(createLink.textKey).toUpperCase() }}
-          </v-list-item-title>
-        </v-list-item>
-
-        <v-divider class="mobile-menu-divider" />
-
-        <!-- Authentication Section -->
-        <template v-if="!isLoggedIn">
+    <ClientOnly>
+      <v-navigation-drawer
+        v-model="mobileMenuOpen"
+        location="end"
+        temporary
+        class="mobile-drawer"
+        width="280"
+      >
+        <v-list class="mobile-menu-list">
+          <!-- Navigation Links -->
           <v-list-item
-            v-for="authBtn in authButtons"
-            :key="authBtn.route"
-            :to="authBtn.route"
+            v-for="link in navigationLinks"
+            :key="link.route"
+            :to="link.route"
             @click="mobileMenuOpen = false"
             class="mobile-menu-item"
           >
             <v-list-item-title class="mobile-menu-text">
-              {{ $t(authBtn.textKey).toUpperCase() }}
+              {{ $t(link.textKey).toUpperCase() }}
             </v-list-item-title>
           </v-list-item>
-        </template>
-
-        <template v-else>
-  
-
-          <!-- User Menu Items -->
+          
+          <!-- Create Button (conditional routing) -->
           <v-list-item
-            v-for="item in userMenuItems"
-            :key="item.route || item.action"
-            :to="item.route"
-            @click="item.action ? handleMenuAction(item.action) : (mobileMenuOpen = false)"
+            @click="handleCreateClickMobile"
             class="mobile-menu-item"
           >
             <v-list-item-title class="mobile-menu-text">
-              {{ $t(item.textKey).toUpperCase() }}
+              {{ $t(createLink.textKey).toUpperCase() }}
             </v-list-item-title>
           </v-list-item>
-        </template>
-      </v-list>
-    </v-navigation-drawer>
+
+          <v-divider class="mobile-menu-divider" />
+
+          <!-- Authentication Section -->
+          <template v-if="!isLoggedIn">
+            <v-list-item
+              v-for="authBtn in authButtons"
+              :key="authBtn.route"
+              :to="authBtn.route"
+              @click="mobileMenuOpen = false"
+              class="mobile-menu-item"
+            >
+              <v-list-item-title class="mobile-menu-text">
+                {{ $t(authBtn.textKey).toUpperCase() }}
+              </v-list-item-title>
+            </v-list-item>
+          </template>
+
+          <template v-else>
+            <!-- User Menu Items -->
+            <v-list-item
+              v-for="item in userMenuItems"
+              :key="item.route || item.action"
+              :to="item.route"
+              @click="item.action ? handleMenuAction(item.action) : (mobileMenuOpen = false)"
+              class="mobile-menu-item"
+            >
+              <v-list-item-title class="mobile-menu-text">
+                {{ $t(item.textKey).toUpperCase() }}
+              </v-list-item-title>
+            </v-list-item>
+          </template>
+        </v-list>
+      </v-navigation-drawer>
+    </ClientOnly>
   </div>
 </template>
 
@@ -182,6 +184,9 @@ interface UserMenuItem {
 // Auth store Pinia
 const authStore = useAuthStore()
 const { isLoggedIn, user, userName } = storeToRefs(authStore)
+
+// Nuxt composables
+const localePath = useLocalePath()
 
 // Local state
 const mobileMenuOpen = ref(false)

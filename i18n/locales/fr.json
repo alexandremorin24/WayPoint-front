@@ -54,7 +54,8 @@
         "revokeFailed": "La révocation de l'accès a échoué",
         "invalidEmailOrUser": "Veuillez sélectionner un utilisateur valide ou saisir un email valide",
         "descriptionTooLong": "La description doit contenir moins de 120 caractères",
-        "uploadError": "Erreur lors de l'upload"
+        "uploadError": "Erreur lors de l'upload",
+        "invalidToken": "Lien de réinitialisation invalide ou expiré"
     },
     "auth": {
         "loginTitle": "Connexion",
@@ -68,11 +69,13 @@
         "forgotPassword": "Mot de passe oublié ?",
         "resetPassword": "Réinitialiser le mot de passe",
         "resetPasswordTitle": "Réinitialisation du mot de passe",
+        "resetPasswordDescription": "Choisissez un nouveau mot de passe sécurisé pour votre compte.",
         "resetPasswordSuccess": "Votre mot de passe a été réinitialisé avec succès",
         "resetPasswordRequest": "Demander une réinitialisation",
         "resetPasswordRequestSuccess": "Si un compte existe avec cet email, vous recevrez un lien de réinitialisation",
         "resetPasswordRequestTitle": "Réinitialisation du mot de passe",
         "resetPasswordRequestDescription": "Entrez votre adresse email pour recevoir un lien de réinitialisation",
+        "backToLogin": "Retour à la connexion",
         "newPassword": "Nouveau mot de passe",
         "confirmNewPassword": "Confirmer le nouveau mot de passe",
         "login": {
@@ -98,7 +101,9 @@
         "missingToken": "Token de vérification manquant.",
         "networkError": "Erreur de connexion. Veuillez vérifier votre connexion internet.",
         "continueToLogin": "Continuer vers la connexion",
-        "goHome": "Retour à l'accueil"
+        "goHome": "Retour à l'accueil",
+        "alreadyHaveAccount": "Vous avez déjà un compte ?",
+        "noAccountRegister": "Pas encore de compte ?"
     },
     "home": {
         "welcome": "Bienvenue sur WayPoint",
@@ -142,7 +147,8 @@
         "mapCount": {
             "singular": "carte",
             "plural": "cartes"
-        }
+        },
+        "createNewMap": "Créer une nouvelle carte"
     },
     "mapDetails": {
         "title": "Carte :",
@@ -396,7 +402,7 @@
         "onlyOwnerCanManage": "Seul le propriétaire de la carte peut gérer les collaborateurs et les invitations."
     },
     "roles": {
-        "viewer": "Observateur",
+        "viewer": "Lecteur",
         "viewer_description": "Peut voir la carte et les points d'intérêt",
         "editor": "Éditeur",
         "editor_description": "Peut créer, modifier et supprimer les points d'intérêt"

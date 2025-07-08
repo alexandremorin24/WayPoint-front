@@ -54,7 +54,8 @@
         "revokeFailed": "Failed to revoke access",
         "invalidEmailOrUser": "Please select a valid user or enter a valid email",
         "descriptionTooLong": "Description must be less than 120 characters",
-        "uploadError": "Upload error"
+        "uploadError": "Upload error",
+        "invalidToken": "Invalid or expired reset link"
     },
     "auth": {
         "loginTitle": "Login",
@@ -68,11 +69,13 @@
         "forgotPassword": "Forgot password?",
         "resetPassword": "Reset password",
         "resetPasswordTitle": "Password reset",
+        "resetPasswordDescription": "Choose a new secure password for your account.",
         "resetPasswordSuccess": "Your password has been successfully reset",
         "resetPasswordRequest": "Request reset",
         "resetPasswordRequestSuccess": "If an account exists with this email, you will receive a reset link",
         "resetPasswordRequestTitle": "Password reset",
         "resetPasswordRequestDescription": "Enter your email address to receive a reset link",
+        "backToLogin": "Back to Login",
         "newPassword": "New password",
         "confirmNewPassword": "Confirm new password",
         "verifyingEmail": "Verifying your email...",
@@ -83,7 +86,9 @@
         "missingToken": "Verification token is missing.",
         "networkError": "Connection error. Please check your internet connection.",
         "continueToLogin": "Continue to login",
-        "goHome": "Go home"
+        "goHome": "Go home",
+        "alreadyHaveAccount": "Already have an account?",
+        "noAccountRegister": "Don't have an account yet?"
     },
     "home": {
         "welcome": "Welcome to WayPoint",
@@ -127,7 +132,8 @@
         "mapCount": {
             "singular": "map",
             "plural": "maps"
-        }
+        },
+        "createNewMap": "Create New Map"
     },
     "mapDetails": {
         "title": "Map:",

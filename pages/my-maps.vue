@@ -62,6 +62,48 @@
               <div v-if="filteredMaps.length > 0">
                 <!-- Grid of maps -->
                 <v-row>
+                  <!-- Create new map card (only on first page of owned maps) -->
+                  <v-col 
+                    v-if="currentPage === 1 && viewMode === 'owned'"
+                    cols="12" 
+                    md="6"
+                  >
+                    <v-card 
+                      class="flex-grow-1 create-map-card" 
+                      color="primary" 
+                      dark
+                      elevation="4"
+                      @click="$router.push('/maps/create')"
+                    >
+                      <div class="d-flex">
+                        <!-- Create icon thumbnail -->
+                        <div class="map-thumbnail-container create-icon-container">
+                          <v-icon icon="mdi-plus-circle" size="140" color="secondary" />
+                        </div>
+
+                        <!-- Create map content -->
+                        <div class="flex-grow-1 d-flex flex-column">
+                          <v-card-text class="d-flex align-center justify-left flex-grow-1 ml-0 pl-0">
+                            <!-- Simple create map text -->
+                            <h3 class="text-h5 font-weight-bold text-left create-map-title ">
+                              {{ $t('createMap.createNewMap') }}
+                            </h3>
+                          </v-card-text>
+
+                          <!-- Create action -->
+                          <v-card-actions class="pt-0 px-4 pb-4 justify-end">
+                            <v-btn
+                              size="small"
+                              class="font-weight-bold create-map-btn"
+                            >
+                              {{ $t('createMap.create') }}
+                            </v-btn>
+                          </v-card-actions>
+                        </div>
+                      </div>
+                    </v-card>
+                  </v-col>
+
                   <v-col 
                     v-for="map in paginatedMaps" 
                     :key="`${map.isOwned ? 'owned' : 'shared'}-${map.id}`" 
@@ -228,29 +270,31 @@
 
       <!-- Delete dialog -->
       <v-dialog v-model="deleteDialog" max-width="500">
-        <v-card>
-          <v-card-title class="text-h5">
+        <v-card class="delete-dialog-card">
+          <v-card-title class="text-h5 delete-dialog-title">
             {{ $t('myMaps.deleteTitle') }}
           </v-card-title>
-          <v-card-text>
-            <v-alert type="warning" class="mb-2">
+          <v-card-text class="delete-dialog-content pb-0">
+            <v-alert type="warning" class="mb-2 delete-dialog-alert">
               {{ $t('myMaps.deleteWarning') }}
             </v-alert>
-            <div class="mb-2">
+            <div class="mb-2 text-white">
               {{ $t('myMaps.deleteExplain') }}
             </div>
             <v-text-field
               v-model="deleteConfirmText"
               :label="$t('myMaps.deleteLabel')"
+              variant="outlined"
+              class="delete-dialog-input mb-0 pb-0 mt-0 pt-0"
             />
           </v-card-text>
-          <v-card-actions>
-            <v-spacer />
-            <v-btn color="grey" variant="outlined" @click="closeDeleteDialog">
+          <v-card-actions class="delete-dialog-actions mb-2 pt-0">
+            <v-btn class="delete-dialog-cancel-btn" variant="outlined" @click="closeDeleteDialog">
               {{ $t('common.cancel') }}
             </v-btn>
             <v-btn
-              :color="deleteConfirmText === 'delete' ? 'red' : 'grey'"
+              class="delete-dialog-confirm-btn"
+              :class="{ 'delete-dialog-confirm-btn-enabled': deleteConfirmText === 'delete' }"
               :disabled="deleteConfirmText !== 'delete'"
               @click="confirmDeleteMap"
             >
@@ -355,13 +399,37 @@ const filteredMaps = computed(() => {
 
 // Pagination for the filtered list
 const totalPages = computed(() => {
-  return Math.ceil(filteredMaps.value.length / itemsPerPage.value)
+  const totalMaps = filteredMaps.value.length
+  if (viewMode.value === 'owned' && totalMaps > 0) {
+    // First page has create block + up to 3 maps
+    if (totalMaps <= 3) {
+      return 1 // All maps fit on first page with create block
+    } else {
+      // First page: create block + 3 maps, then 4 maps per page
+      const remainingMaps = totalMaps - 3
+      return 1 + Math.ceil(remainingMaps / itemsPerPage.value)
+    }
+  }
+  return Math.ceil(totalMaps / itemsPerPage.value)
 })
 
 const paginatedMaps = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage.value
-  const end = start + itemsPerPage.value
-  return filteredMaps.value.slice(start, end)
+  if (viewMode.value === 'owned') {
+    if (currentPage.value === 1) {
+      // First page: show create block + up to 3 maps
+      return filteredMaps.value.slice(0, Math.min(3, filteredMaps.value.length))
+    } else {
+      // Following pages: show 4 maps, but skip the first 3 already shown
+      const start = 3 + (currentPage.value - 2) * itemsPerPage.value
+      const end = start + itemsPerPage.value
+      return filteredMaps.value.slice(start, end)
+    }
+  } else {
+    // Shared maps: normal pagination
+    const start = (currentPage.value - 1) * itemsPerPage.value
+    const end = start + itemsPerPage.value
+    return filteredMaps.value.slice(start, end)
+  }
 })
 
 // Pages visible in the pagination
@@ -693,5 +761,121 @@ onMounted(fetchMyMaps)
 .badges-container {
   flex-wrap: wrap;
   gap: 4px;
+}
+
+/* Delete dialog styles */
+.delete-dialog-card {
+  background-color: #001D3D !important;
+  color: white !important;
+  border: 1px solid #FFC300;
+  border-radius: 5px !important;
+
+}
+
+.delete-dialog-title {
+  color: #FFC300 !important;
+  padding: 16px 0px 0px 24px !important;
+  font-weight: bold !important;
+}
+
+.delete-dialog-content {
+  background-color: #001D3D !important;
+  color: white !important;
+  padding: 20px 24px !important;
+}
+
+.delete-dialog-alert {
+  background-color: rgba(255, 152, 0, 0.1) !important;
+  border: 1px solid #FF9800 !important;
+  color: #FFC300 !important;
+}
+
+.delete-dialog-alert :deep(.v-alert__content) {
+  color: #FFC300 !important;
+}
+
+.delete-dialog-input :deep(.v-field) {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.delete-dialog-input :deep(.v-field__input) {
+  color: white !important;
+}
+
+.delete-dialog-input :deep(.v-label) {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.delete-dialog-input :deep(.v-field__outline) {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.delete-dialog-input :deep(.v-field--focused .v-field__outline) {
+  border-color: #FFC300 !important;
+}
+
+.delete-dialog-input :deep(.v-input__details) {
+  display: none !important;
+}
+
+/* Create map card styles */
+.create-map-card {
+  cursor: pointer !important;
+  transition: all 0.3s ease;
+  border: 2px dashed rgba(255, 195, 0, 0.3);
+}
+
+.create-map-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 195, 0, 0.6);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.create-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.create-map-card:hover .create-icon-container {
+  transform: scale(1.1);
+}
+
+
+
+.create-map-title {
+  color: #FFC300 !important;
+}
+
+.create-map-btn {
+  background-color: #FFC300 !important;
+  color: #001D3D !important;
+}
+
+.delete-dialog-cancel-btn {
+  color: rgba(255, 255, 255, 0.7) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.delete-dialog-cancel-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
+}
+
+.delete-dialog-confirm-btn {
+  background-color: #666 !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+  border: none !important;
+}
+
+.delete-dialog-confirm-btn-enabled {
+  background-color: #f44336 !important;
+  color: white !important;
+}
+
+.delete-dialog-confirm-btn-enabled:hover {
+  background-color: #d32f2f !important;
 }
 </style>

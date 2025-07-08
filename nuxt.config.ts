@@ -22,7 +22,8 @@ export default defineNuxtConfig({
 
   css: [
     'vuetify/styles',
-    '~/assets/css/main.css'
+    '~/assets/css/main.css',
+    '~/assets/css/autofill-fix.css'
   ],
 
   i18n: {
@@ -46,7 +47,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      API_BASE: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:3000/api'
+      API_BASE: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:3000'
     }
   },
 

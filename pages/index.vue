@@ -215,6 +215,12 @@ function navigateToCreate() {
   overflow-y: auto;
   scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.snap-container::-webkit-scrollbar {
+  display: none; /* Webkit browsers (Chrome, Safari, etc.) */
 }
 .snap-section {
   scroll-snap-align: start;

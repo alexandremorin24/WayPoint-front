@@ -226,7 +226,7 @@ const success = ref(false);
 const uploadProgress = ref(0);
 const publicMaps = ref<MapData[]>([]);
 const selectedMapId = ref<string>('upload');
-const backendBase = config.public.API_BASE.replace(/\/api\/backend$/, '');
+const backendBase = config.public.API_BASE;
 
 // State for game search
 const gameResults = ref<Array<{name: string, count: number}>>([]);
@@ -361,7 +361,7 @@ const fetchPublicMaps = async () => {
     selectedMapId.value = 'upload';
     if (!gameName.value || typeof gameName.value !== 'string') return;
     try {
-        const res = await fetch(`${config.public.API_BASE}/maps/public-by-game-name/${encodeURIComponent(gameName.value.trim())}`);
+        const res = await fetch(`${config.public.API_BASE}/api/backend/maps/public-by-game-name/${encodeURIComponent(gameName.value.trim())}`);
         if (res.ok) {
             publicMaps.value = await res.json();
         }
@@ -391,7 +391,7 @@ const searchGames = async (query: string) => {
 
     loadingGames.value = true;
     try {
-        const response = await fetch(`${config.public.API_BASE}/maps/games/search?q=${encodeURIComponent(query)}`);
+        const response = await fetch(`${config.public.API_BASE}/api/backend/maps/games/search?q=${encodeURIComponent(query)}`);
         if (response.ok) {
             const data = await response.json();
             gameResults.value = data;
@@ -466,7 +466,7 @@ const handleCreate = async () => {
         // Use XMLHttpRequest to track upload progress
         await new Promise<void>((resolve, reject) => {
             const xhr = new XMLHttpRequest();
-            xhr.open('POST', `${config.public.API_BASE}/maps`, true);
+            xhr.open('POST', `${config.public.API_BASE}/api/backend/maps`, true);
             xhr.setRequestHeader('Authorization', `Bearer ${token}`);
             xhr.upload.onprogress = (event) => {
                 if (event.lengthComputable) {
@@ -551,7 +551,7 @@ const handleCreate = async () => {
 
 .clickable-upload {
     border: 2px dashed rgb(var(--v-theme-secondary));
-    background-color: rgba(var(--v-theme-secondary), 0.1);
+    background-color: rgba(var(--v-theme-primary));
     cursor: pointer;
 }
 

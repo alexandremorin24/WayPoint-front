@@ -30,7 +30,7 @@ onMounted(async () => {
   }
 
   try {
-    const { data } = await axios.get<MapData>(`${config.public.API_BASE}/maps/${mapId}`, { headers })
+    const { data } = await axios.get<MapData>(`${config.public.API_BASE}/api/backend/maps/${mapId}`, { headers })
     const transformed = data
 
     if (!transformed.imageUrl) {
