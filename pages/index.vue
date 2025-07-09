@@ -43,7 +43,7 @@
     </section>
 
     <!-- Features Section -->
-    <section id="section-2" class="snap-section" style="background-color: #001D3D; color: white;">
+    <section id="section-2" class="snap-section" style="background-color: #001D3D; color: white; border: 1px;">
       <v-container fluid class="fill-height pa-0">
         <v-row class="fill-height ma-0" align="center" justify="center">
           <v-col cols="12" class="px-4">
@@ -69,13 +69,12 @@
                         class="feature-card transition-swing"
                         color="primary"
                       >
-                        <v-img height="180" :src="feature.image" :alt="feature.title" cover class="mb-4" />
+                        <v-img :src="feature.image" :alt="feature.title" cover class="mb-4" />
                         <v-card-title class="text-h6 font-weight-bold">{{ feature.title }}</v-card-title>
                         <v-card-text>{{ feature.description }}</v-card-text>
                         <v-fade-transition>
                           <template v-if="isHovering">
                             <v-overlay :model-value="true" contained scrim="primary" class="align-center justify-center">
-                              <v-btn color="secondary" variant="text">{{ $t('landing.features.learnMore') }}</v-btn>
                             </v-overlay>
                           </template>
                         </v-fade-transition>
@@ -98,22 +97,30 @@
         </v-slide-y-transition>
         <v-carousel
           cycle
-          height="400"
+          height="700"
           hide-delimiter-background
           show-arrows="hover"
           class="rounded-lg"
         >
           <v-carousel-item v-for="(map, i) in communityMaps" :key="i">
             <v-sheet height="100%" class="d-flex align-center justify-center">
-              <v-img :src="map.image" height="100%" cover class="rounded-lg">
+              <v-img 
+                :src="map.image" 
+                height="100%" 
+                cover 
+                class="rounded-lg carousel-map-item"
+                @click="navigateToMap(map.url)"
+              >
                 <template #placeholder>
                   <v-row class="fill-height ma-0" align="center" justify="center">
                     <v-progress-circular indeterminate color="grey-lighten-4" />
                   </v-row>
                 </template>
-                <div class="fill-height d-flex flex-column justify-end pa-4 map-overlay">
-                  <h3 class="text-h5 font-weight-bold mb-2">{{ map.title }}</h3>
-                  <p class="text-subtitle-1">{{ map.description }}</p>
+                <div class="fill-height d-flex flex-column justify-end pa-4">
+                  <div class="text-overlay">
+                    <h3 class="text-h5 font-weight-bold mb-2">{{ map.title }}</h3>
+                    <p class="text-subtitle-1">{{ map.description }}</p>
+                  </div>
                 </div>
               </v-img>
             </v-sheet>
@@ -165,17 +172,17 @@ const features = [
   {
     title: t('landing.features.upload.title'),
     description: t('landing.features.upload.description'),
-    image: '/index/placeholder.png'
+    image: '/index/createpreview.png'
   },
   {
     title: t('landing.features.poi.title'),
     description: t('landing.features.poi.description'),
-    image: '/index/placeholder.png'
+    image: '/index/poipreview.png'
   },
   {
     title: t('landing.features.collaborate.title'),
     description: t('landing.features.collaborate.description'),
-    image: '/index/placeholder.png'
+    image: '/index/collaboratorpreview.png'
   }
 ]
 
@@ -183,17 +190,20 @@ const communityMaps = [
   {
     title: 'Elden Ring World Map',
     description: 'Complete map of the Lands Between with all boss locations',
-    image: '/index/placeholder.png'
+    image: '/index/eldenringpreview.png',
+    url: '/maps/68b0771f-76b4-4607-8a79-f2578393569e/799e748a-8bdd-433f-a3ef-6d3e0fdd2fbb'
   },
   {
     title: 'Zelda: Tears of the Kingdom',
     description: 'Interactive map of Hyrule with shrines and koroks',
-    image: '/index/placeholder.png'
+    image: '/index/zeldatotkpreview.png',
+    url: '/maps/09832753-3816-4e1b-9bcf-8f01e6ecc52c/c4978bb8-e47b-461c-8e0c-4a3d662a2afe'
   },
   {
-    title: "Baldur's Gate 3",
-    description: 'Map of Faer\u00fbn with quest locations and secrets',
-    image: '/index/placeholder.png'
+    title: "Grand Theft Auto IV",
+    description: 'Map of Liberty City with all locations',
+    image: '/index/gtaivpreview.png',
+    url: '/maps/9dd583d4-4f1e-4f8e-920a-8b9b76e3fd56/0f86e537-85ac-403a-a135-7f895da7dd5b'
   }
 ]
 
@@ -206,6 +216,10 @@ function scrollToSection(sectionNumber: number) {
 
 function navigateToCreate() {
   router.push(localePath('/maps/create'))
+}
+
+function navigateToMap(url: string) {
+  router.push(localePath(url))
 }
 </script>
 
@@ -242,8 +256,19 @@ function navigateToCreate() {
 .feature-card:hover {
   transform: translateY(-5px);
 }
-.map-overlay {
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+.text-overlay {
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 8px;
+  color: #333 !important;
+  padding: 12px 16px;
+  width: fit-content;
+}
+.carousel-map-item {
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+.carousel-map-item:hover {
+  transform: scale(1.02);
 }
 .animate-text {
   animation: fadeInUp 1s ease-out;

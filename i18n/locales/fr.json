@@ -65,7 +65,7 @@
         "username": "Nom d'utilisateur",
         "confirmPassword": "Confirmer le mot de passe",
         "verificationEmailSent": "Email de vérification envoyé à {email}",
-        "emailVerified": "Votre email a été vérifié avec succès. Vous pouvez maintenant vous connecter.",
+        "emailVerified": "Votre email a été vérifié avec succès.",
         "forgotPassword": "Mot de passe oublié ?",
         "resetPassword": "Réinitialiser le mot de passe",
         "resetPasswordTitle": "Réinitialisation du mot de passe",
@@ -96,7 +96,7 @@
         "verifyingEmail": "Vérification de votre email...",
         "verificationFailed": "Échec de la vérification",
         "pleaseWait": "Veuillez patienter pendant que nous vérifions votre adresse email.",
-        "emailVerifiedMessage": "Votre adresse email a été vérifiée avec succès. Vous pouvez maintenant vous connecter à votre compte.",
+        "emailVerifiedMessage": "Votre adresse email a été vérifiée avec succès.",
         "verificationError": "La vérification de votre email a échoué. Le lien peut être expiré ou invalide.",
         "missingToken": "Token de vérification manquant.",
         "networkError": "Erreur de connexion. Veuillez vérifier votre connexion internet.",
@@ -148,7 +148,8 @@
             "singular": "carte",
             "plural": "cartes"
         },
-        "createNewMap": "Créer une nouvelle carte"
+        "createNewMap": "Créer une nouvelle carte",
+        "processing": "Traitement en cours"
     },
     "mapDetails": {
         "title": "Carte :",
@@ -285,7 +286,7 @@
         "manageCategories": "Gérer les catégories",
         "manageCollaborators": "Gérer les collaborateurs",
         "addCollaborator": "Inviter un collaborateur",
-        "editMapInfo": "Modifier les informations",
+        "editMapInfo": "Modifier les informations de la carte",
         "mapName": "Nom de la carte",
         "mapDescription": "Description de la carte",
         "isPublic": "Carte publique",
@@ -311,7 +312,11 @@
         "editOptions": "Options d'édition",
         "pois": "Points d'intérêt",
         "showAll": "Tout afficher",
-        "hideAll": "Tout masquer"
+        "hideAll": "Tout masquer",
+        "mapVisibility": "Visibilité de la carte",
+        "public": "Public",
+        "private": "Privé",
+        "ownerCanEditVisibility": "Le propriétaire peut modifier cette option depuis la section \"Modifier les informations\""
     },
     "poi": {
         "form": {

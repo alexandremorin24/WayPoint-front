@@ -46,7 +46,7 @@
           class="text-h4 text-white d-block w-100 text-center text-wrap"
           style="min-width: 180px; max-width: 100%; word-break: break-word; line-height: 1.1;"
         >
-        {{ map?.gameName || '...' }}
+        {{ gameName }}
       </v-list-item-title>
       </v-list-item>
 
@@ -55,7 +55,7 @@
           class="text-h5 text-white d-block w-100 text-center text-wrap"
           style="min-width: 180px; max-width: 100%; word-break: break-word; line-height: 1.1;"
         >
-          {{ map?.name || '...' }}
+          {{ mapName }}
         </v-list-item-title>
       </v-list-item>
 
@@ -67,9 +67,34 @@
           style="border: 1px solid #fff3;"
         >
           <span class="text-white text-center d-block">
-            {{ map?.description || '...' }}
+            {{ mapDescription }}
           </span>
         </v-sheet>
+      </v-list-item>
+
+      <!-- Map visibility indicator -->
+      <v-list-item v-if="showVisibilityIndicator">
+        <div class="d-flex justify-center">
+          <v-tooltip location="bottom">
+            <template v-slot:activator="{ props }">
+              <v-chip
+                v-bind="props"
+                :color="mapIsPublic ? 'success' : 'warning'"
+                variant="outlined"
+                size="small"
+                class="ma-1"
+              >
+                <v-icon 
+                  :icon="mapIsPublic ? 'mdi-earth' : 'mdi-lock'" 
+                  size="small" 
+                  start
+                />
+                {{ mapIsPublic ? t('sidebar.public') : t('sidebar.private') }}
+              </v-chip>
+            </template>
+            <span>{{ isOwner ? t('sidebar.ownerCanEditVisibility') : t('sidebar.mapVisibility') }}</span>
+          </v-tooltip>
+        </div>
       </v-list-item>
 
       <v-divider class="my-2" />
@@ -363,14 +388,17 @@ const invitationSidebarOpen = ref(false)
 const { mobile } = useDisplay()
 const isMobile = computed(() => mobile.value)
 
+// Computed properties for map data (simple and reactive)
+const gameName = computed(() => props.map?.gameName || '...')
+const mapName = computed(() => props.map?.name || '...')
+const mapDescription = computed(() => props.map?.description || '...')
+const mapIsPublic = computed(() => props.map?.isPublic === true)
+const showVisibilityIndicator = computed(() => props.map && typeof props.map.isPublic === 'boolean')
+const isOwner = computed(() => props.map?.userRole === 'owner')
+
 const canEdit = computed(() => {
   return props.map?.userRole === 'owner' || 
          props.map?.userRole === 'editor'
-})
-
-// Seuls les propriétaires peuvent gérer les collaborateurs et modifier les informations de la carte
-const isOwner = computed(() => {
-  return props.map?.userRole === 'owner'
 })
 
 const editOptions = computed(() => {

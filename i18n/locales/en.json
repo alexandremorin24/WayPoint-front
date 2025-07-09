@@ -65,7 +65,7 @@
         "username": "Username",
         "confirmPassword": "Confirm password",
         "verificationEmailSent": "Verification email sent to {email}",
-        "emailVerified": "Your email has been successfully verified. You can now log in.",
+        "emailVerified": "Your email has been successfully verified.",
         "forgotPassword": "Forgot password?",
         "resetPassword": "Reset password",
         "resetPasswordTitle": "Password reset",
@@ -81,7 +81,7 @@
         "verifyingEmail": "Verifying your email...",
         "verificationFailed": "Verification failed",
         "pleaseWait": "Please wait while we verify your email address.",
-        "emailVerifiedMessage": "Your email address has been successfully verified. You can now log in to your account.",
+        "emailVerifiedMessage": "Your email address has been successfully verified.",
         "verificationError": "Email verification failed. The link may be expired or invalid.",
         "missingToken": "Verification token is missing.",
         "networkError": "Connection error. Please check your internet connection.",
@@ -133,7 +133,8 @@
             "singular": "map",
             "plural": "maps"
         },
-        "createNewMap": "Create New Map"
+        "createNewMap": "Create New Map",
+        "processing": "Processing"
     },
     "mapDetails": {
         "title": "Map:",
@@ -270,7 +271,7 @@
         "manageCategories": "Manage Categories",
         "manageCollaborators": "Manage Collaborators",
         "addCollaborator": "Invite a collaborator",
-        "editMapInfo": "Edit Information",
+        "editMapInfo": "Edit map informations",
         "mapName": "Map name",
         "mapDescription": "Map description",
         "isPublic": "Public map",
@@ -296,7 +297,11 @@
         "editOptions": "Edit Options",
         "pois": "Points of Interest",
         "showAll": "Show all",
-        "hideAll": "Hide all"
+        "hideAll": "Hide all",
+        "mapVisibility": "Map visibility",
+        "public": "Public",
+        "private": "Private",
+        "ownerCanEditVisibility": "The owner can modify this setting from the \"Edit information\" section"
     },
     "poi": {
         "form": {

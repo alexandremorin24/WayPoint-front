@@ -181,13 +181,16 @@
 
 
                                     <v-btn class="mt-4 text-background" color="secondary" type="submit" :disabled="isSubmitting" block>
+                                        <v-progress-circular v-if="isSubmitting" indeterminate size="20" width="2" class="mr-2" />
                                         {{ $t('createMap.create') }}
                                     </v-btn>
-                                    <v-progress-linear v-if="uploadProgress > 0 && uploadProgress < 100" :value="uploadProgress" class="mt-4" color="secondary" height="8">
-                                      <template #default>
-                                        <span class="text-background">{{ uploadProgress }}%</span>
-                                      </template>
+                                    
+                                    <!-- Barre de chargement générale pendant la soumission -->
+                                    <v-progress-linear v-if="isSubmitting && uploadProgress === 0" indeterminate class="mt-2" color="secondary" height="4">
                                     </v-progress-linear>
+                                    
+
+  
                                     <v-alert v-if="error" type="error" class="mt-4">{{ error }}</v-alert>
                                     <v-alert v-if="success" type="success" class="mt-4">{{ $t('createMap.success') }}</v-alert>
                                 </v-form>
@@ -224,6 +227,7 @@ const isSubmitting = ref(false);
 const error = ref<string | null>(null);
 const success = ref(false);
 const uploadProgress = ref(0);
+const showCompletedProgress = ref(false);
 const publicMaps = ref<MapData[]>([]);
 const selectedMapId = ref<string>('upload');
 const backendBase = config.public.API_BASE;
@@ -427,6 +431,7 @@ const handleCreate = async () => {
     error.value = null;
     success.value = false;
     uploadProgress.value = 0;
+    showCompletedProgress.value = false;
     try {
         // Check the required fields and create a specific message
         const missingFields = [];
@@ -470,15 +475,28 @@ const handleCreate = async () => {
             xhr.setRequestHeader('Authorization', `Bearer ${token}`);
             xhr.upload.onprogress = (event) => {
                 if (event.lengthComputable) {
-                    uploadProgress.value = Math.round((event.loaded / event.total) * 100);
+                    const progress = Math.round((event.loaded / event.total) * 100);
+                    uploadProgress.value = progress;
+                    
+                    // Quand l'upload atteint 100%, montrer la barre de traitement
+                    if (progress >= 100) {
+                        setTimeout(() => {
+                            showCompletedProgress.value = true;
+                            uploadProgress.value = 0;
+                        }, 200);
+                    }
                 }
             };
             xhr.onload = () => {
                 if (xhr.status >= 200 && xhr.status < 300) {
                     const data = JSON.parse(xhr.responseText);
-                    success.value = true;
-                    router.push(`/maps/${data.gameId}/${data.id}`);
-                    resolve();
+                    
+                    // Garder la barre de traitement visible un peu plus longtemps
+                    setTimeout(() => {
+                        success.value = true;
+                        router.push(`/maps/${data.gameId}/${data.id}`);
+                        resolve();
+                    }, 800);
                 } else {
                     try {
                         const data = JSON.parse(xhr.responseText);
@@ -499,7 +517,11 @@ const handleCreate = async () => {
         }
     } finally {
         isSubmitting.value = false;
-        uploadProgress.value = 0;
+        // Ne pas réinitialiser immédiatement pour laisser voir la progression
+        setTimeout(() => {
+            uploadProgress.value = 0;
+            showCompletedProgress.value = false;
+        }, 1000);
     }
 };
 </script>

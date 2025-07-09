@@ -6,6 +6,18 @@
       {{ $t('map.clickToAddPoi') }}
     </div>
 
+    <!-- Bouton Explorer en haut à droite -->
+    <v-btn
+      class="explore-button"
+      color="#FFD600"
+      variant="elevated"
+      size="small"
+      icon
+      @click="$router.push('/explore')"
+    >
+      <v-icon>mdi-home</v-icon>
+    </v-btn>
+
     <MobilePoiForm
       v-if="isMobile && showMobileForm"
       :categories="categories"
@@ -692,6 +704,15 @@ watch(() => props.visibleCategories, (newVisibleCategories) => {
   pointer-events: none;
 }
 
+.explore-button {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 1500;
+  font-weight: 500;
+  text-transform: none;
+}
+
 :deep(.leaflet-popup-content-wrapper) {
   background: #002040 !important;
   border-radius: 0 !important;
@@ -787,19 +808,7 @@ watch(() => props.visibleCategories, (newVisibleCategories) => {
   position: relative;
   z-index: 1;
 }
-.custom-marker div::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  bottom: -10px;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 20px solid transparent;
-  border-right: 20px solid transparent;
-  border-top: 24px solid var(--marker-color, #0099ff);
-  z-index: 0;
-}
+
 .custom-marker div > i {
   position: relative;
   z-index: 2;

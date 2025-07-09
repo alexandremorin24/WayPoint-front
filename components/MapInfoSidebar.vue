@@ -51,7 +51,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { MapData } from '@/types/map'
 import axios from 'axios'
@@ -76,6 +76,11 @@ const editingMap = ref<MapData>({ ...props.map })
 const showNotification = ref(false)
 const notificationMessage = ref('')
 const notificationType = ref<'error' | 'success' | 'info'>('error')
+
+// Watch for changes in props.map to update editingMap
+watch(() => props.map, (newMap) => {
+  editingMap.value = { ...newMap }
+}, { deep: true })
 
 function showError(message: string) {
   notificationMessage.value = message
@@ -128,8 +133,18 @@ async function saveMap() {
       isPublic: Boolean(editingMap.value.isPublic)
     }
 
-    const { data: updatedMap } = await axios.put(`/api/backend/maps/${props.map.id}`, dataToSend, { headers })
-    emit('update:map', updatedMap)
+    const response = await axios.put(`/api/backend/maps/${props.map.id}`, dataToSend, { headers })
+    
+    // The backend returns { message: "Map updated successfully", map: updatedMap }
+    const updatedMap = response.data.map
+    
+    // Merge the updated data with the original map to preserve all fields
+    const completeUpdatedMap = {
+      ...props.map,
+      ...updatedMap
+    }
+    
+    emit('update:map', completeUpdatedMap)
     showSuccess(t('sidebar.mapUpdated'))
     closePanel()
   } catch (error: any) {

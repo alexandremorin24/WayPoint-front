@@ -4,8 +4,8 @@ import type { POIData } from '@/types/poi'
 
 // Constants for marker styles
 export const MARKER_STYLES = {
-    size: [40, 64] as [number, number],
-    anchor: [20, 48] as [number, number],
+    size: [32, 32] as [number, number],
+    anchor: [16, 16] as [number, number],
     defaultColor: '#0099ff',
     defaultIcon: 'mdi-map-marker'
 }
@@ -17,8 +17,8 @@ export function createMarkerIcon(L: typeof import('leaflet'), category: Category
     return L.divIcon({
         className: 'custom-marker',
         html: `
-      <div style="background-color: ${color}; --marker-color: ${color}; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 6px rgba(0,0,0,0.5), 0 0 2px rgba(0,0,0,0.25); z-index:1;">
-        <i class="mdi ${icon}" style="color: white; font-size: 25px; z-index:2;"></i>
+      <div style="background-color: ${color}; --marker-color: ${color}; width: 32px; height: 32px; border-radius: 50%; border: 2px solid white; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 2px rgba(0,0,0,0.4); z-index:1;">
+        <i class="mdi ${icon}" style="color: white; font-size: 18px; z-index:2;"></i>
       </div>
     `,
         iconSize: MARKER_STYLES.size,

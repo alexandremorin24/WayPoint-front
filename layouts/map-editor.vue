@@ -163,7 +163,8 @@ function openCategorySidebar() {
 }
 
 function updateMap(updatedMap: MapData) {
-  map.value = updatedMap
+  // Force reactivity by creating a new object
+  map.value = { ...updatedMap }
 }
 
 function closeCollaborators() {

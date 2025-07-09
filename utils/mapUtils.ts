@@ -72,7 +72,7 @@ export async function initializeMap(
     const config = getDefaultMapConfig(L, bounds.extended)
 
     const map = L.map(container, config)
-    map.zoomControl.setPosition('topright')
+    map.zoomControl.setPosition('bottomright')
     map.attributionControl.remove()
 
     if (!mapData.imageUrl) {
